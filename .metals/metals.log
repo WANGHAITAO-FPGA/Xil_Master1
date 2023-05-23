@@ -1,0 +1,147 @@
+2022.12.05 15:31:02 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.05 15:31:03 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.05 15:31:03 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.05 15:31:04 INFO  time: initialize in 1.05s
+2022.12.05 15:31:05 WARN  Build server is not auto-connectable.
+十二月 05, 2022 3:31:06 下午 org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+信息: Unsupported notification method: $/setTrace
+2022.12.05 17:19:19 INFO  shutting down Metals
+2022.12.05 17:19:19 ERROR Unexpected error initializing serverorg.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2022.12.06 15:21:50 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.06 15:21:51 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.06 15:21:51 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.06 15:21:52 INFO  time: initialize in 1.26s
+2022.12.06 15:21:52 WARN  Build server is not auto-connectable.
+2022.12.07 10:10:41 INFO  shutting down Metals
+2022.12.07 10:10:42 ERROR Unexpected error initializing serverorg.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2022.12.07 11:40:02 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.07 11:40:03 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.07 11:40:03 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.07 11:40:04 INFO  time: initialize in 1.25s
+2022.12.07 11:40:05 WARN  Build server is not auto-connectable.
+2022.12.07 13:22:17 INFO  shutting down Metals
+2022.12.07 13:22:17 ERROR Unexpected error initializing serverorg.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2022.12.07 15:42:55 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.07 15:42:56 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.07 15:42:56 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.07 15:42:57 INFO  time: initialize in 1.15s
+2022.12.07 15:42:57 WARN  Build server is not auto-connectable.
+2022.12.07 15:43:06 INFO  shutting down Metals
+2022.12.07 15:47:31 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.07 15:47:32 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.07 15:47:32 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.07 15:47:33 INFO  time: initialize in 1.15s
+2022.12.07 15:47:33 WARN  Build server is not auto-connectable.
+2022.12.07 15:47:58 INFO  shutting down Metals
+2022.12.07 15:47:59 ERROR Unexpected error initializing serverorg.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2022.12.07 16:28:15 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.07 16:28:17 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.07 16:28:17 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.07 16:28:18 INFO  time: initialize in 1.15s
+2022.12.07 16:28:18 WARN  Build server is not auto-connectable.
+2022.12.07 17:02:46 INFO  shutting down Metals
+2022.12.07 17:02:46 ERROR Unexpected error initializing serverorg.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2022.12.07 17:03:01 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.07 17:03:03 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.07 17:03:03 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.07 17:03:04 INFO  time: initialize in 1.17s
+2022.12.07 17:03:04 WARN  Build server is not auto-connectable.
+2022.12.07 17:04:58 INFO  shutting down Metals
+2022.12.08 10:49:04 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.08 10:49:05 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.08 10:49:05 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.08 10:49:06 INFO  time: initialize in 1.31s
+2022.12.08 10:49:07 WARN  Build server is not auto-connectable.
+2022.12.08 10:49:07 INFO  shutting down Metals
+2022.12.08 10:49:07 ERROR Unexpected error initializing serverorg.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2022.12.08 15:19:41 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at d:\SCALA\Xil_Master\.metals\lsp.trace.json or C:\Users\pc\AppData\Local\scalameta\metals\cache\lsp.trace.json
+2022.12.08 15:19:42 INFO  logging to file D:\SCALA\Xil_Master\.metals\metals.log
+2022.12.08 15:19:42 INFO  Started: Metals version 0.11.9 in workspace 'D:\SCALA\Xil_Master' for client Visual Studio Code 1.73.0.
+2022.12.08 15:19:43 INFO  time: initialize in 1.25s
+2022.12.08 15:19:43 WARN  Build server is not auto-connectable.
+2022.12.08 15:24:48 WARN  no build target for: D:\SCALA\Xil_Master\build.sbt
+2022.12.08 15:24:49 INFO  no build target found for D:\SCALA\Xil_Master\build.sbt. Using presentation compiler with project's scala-library version: 3.2.0
+2022.12.08 15:24:50 INFO  time: code lens generation in 2.61s
+十二月 08, 2022 3:34:33 下午 org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+信息: Unsupported notification method: $/setTrace
+十二月 08, 2022 3:34:38 下午 org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+信息: Unsupported notification method: $/setTrace
+2022.12.09 11:39:18 INFO  shutting down Metals
+2022.12.09 11:39:19 ERROR Unexpected error initializing serverorg.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:209)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:193)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:194)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:94)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:113)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+

@@ -1,0 +1,89 @@
+package Common.Xil_BlackBox
+
+import spinal.core._
+import spinal.lib.blackbox.xilinx.s7.{BUFG, IBUF}
+
+class MMCME2Attrs{
+  var BANDWIDTH = "OPTIMIZED"
+  var CLKFBOUT_MULT_F = 5.0
+  var CLKFBOUT_PHASE = 0.0
+  var CLKIN1_PERIOD = 0.0
+  var CLKOUT1_DIVIDE = 1
+  var CLKOUT2_DIVIDE = 1
+  var CLKOUT3_DIVIDE = 1
+  var CLKOUT4_DIVIDE = 1
+  var CLKOUT5_DIVIDE = 1
+  var CLKOUT6_DIVIDE = 1
+  var CLKOUT0_DIVIDE_F = 1.0
+  var CLKOUT0_DUTY_CYCLE = 0.5
+  var CLKOUT1_DUTY_CYCLE = 0.5
+  var CLKOUT2_DUTY_CYCLE = 0.5
+  var CLKOUT3_DUTY_CYCLE = 0.5
+  var CLKOUT4_DUTY_CYCLE = 0.5
+  var CLKOUT5_DUTY_CYCLE = 0.5
+  var CLKOUT6_DUTY_CYCLE = 0.5
+  var CLKOUT0_PHASE = 0.0
+  var CLKOUT1_PHASE = 0.0
+  var CLKOUT2_PHASE = 0.0
+  var CLKOUT3_PHASE = 0.0
+  var CLKOUT4_PHASE = 0.0
+  var CLKOUT5_PHASE = 0.0
+  var CLKOUT6_PHASE = 0.0
+  var CLKOUT4_CASCADE = "FALSE"
+  var DIVCLK_DIVIDE = 1
+  var REF_JITTER1 = 0.0
+  var STARTUP_WAIT = "FALSE"
+  def generics = Seq(
+    "BANDWIDTH" -> BANDWIDTH,
+    "CLKFBOUT_MULT_F" -> CLKFBOUT_MULT_F,
+    "CLKFBOUT_PHASE" -> CLKFBOUT_PHASE,
+    "CLKIN1_PERIOD" -> CLKIN1_PERIOD,
+    "CLKOUT1_DIVIDE" -> CLKOUT1_DIVIDE,
+    "CLKOUT2_DIVIDE" -> CLKOUT2_DIVIDE,
+    "CLKOUT3_DIVIDE" -> CLKOUT3_DIVIDE,
+    "CLKOUT4_DIVIDE" -> CLKOUT4_DIVIDE,
+    "CLKOUT5_DIVIDE" -> CLKOUT5_DIVIDE,
+    "CLKOUT6_DIVIDE" -> CLKOUT6_DIVIDE,
+    "CLKOUT0_DIVIDE_F" -> CLKOUT0_DIVIDE_F,
+    "CLKOUT0_DUTY_CYCLE" -> CLKOUT0_DUTY_CYCLE,
+    "CLKOUT1_DUTY_CYCLE" -> CLKOUT1_DUTY_CYCLE,
+    "CLKOUT2_DUTY_CYCLE" -> CLKOUT2_DUTY_CYCLE,
+    "CLKOUT3_DUTY_CYCLE" -> CLKOUT3_DUTY_CYCLE,
+    "CLKOUT4_DUTY_CYCLE" -> CLKOUT4_DUTY_CYCLE,
+    "CLKOUT5_DUTY_CYCLE" -> CLKOUT5_DUTY_CYCLE,
+    "CLKOUT6_DUTY_CYCLE" -> CLKOUT6_DUTY_CYCLE,
+    "CLKOUT0_PHASE" -> CLKOUT0_PHASE,
+    "CLKOUT1_PHASE" -> CLKOUT1_PHASE,
+    "CLKOUT2_PHASE" -> CLKOUT2_PHASE,
+    "CLKOUT3_PHASE" -> CLKOUT3_PHASE,
+    "CLKOUT4_PHASE" -> CLKOUT4_PHASE,
+    "CLKOUT5_PHASE" -> CLKOUT5_PHASE,
+    "CLKOUT6_PHASE" -> CLKOUT6_PHASE,
+    "CLKOUT4_CASCADE" -> CLKOUT4_CASCADE,
+    "DIVCLK_DIVIDE" -> DIVCLK_DIVIDE,
+    "REF_JITTER1" -> REF_JITTER1,
+    "STARTUP_WAIT" -> STARTUP_WAIT
+  )
+}
+
+case class MMCME2_BASE(attrs : MMCME2Attrs) extends  BlackBox{
+  addGenerics(attrs.generics: _*)
+  val CLKOUT0 = out Bool()
+  val CLKOUT0B = out Bool()
+  val CLKOUT1 = out Bool()
+  val CLKOUT1B = out Bool()
+  val CLKOUT2 = out Bool()
+  val CLKOUT2B = out Bool()
+  val CLKOUT3 = out Bool()
+  val CLKOUT3B = out Bool()
+  val CLKOUT4 = out Bool()
+  val CLKOUT5 = out Bool()
+  val CLKOUT6 = out Bool()
+  val CLKFBOUT = out Bool()
+  val CLKFBOUTB = out Bool()
+  val LOCKED = out Bool()
+  val CLKIN1 = in Bool()
+  val PWRDWN = in Bool()
+  val RST = in Bool()
+  val CLKFBIN = in Bool()
+}
