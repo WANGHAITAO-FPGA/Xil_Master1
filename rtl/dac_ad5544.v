@@ -79,28 +79,28 @@ assign	DATA_CH3 	= { 2'h2,AD5544_DATA_IN3 };
 assign	DATA_CH4 	= { 2'h3,AD5544_DATA_IN4 };	
 assign	AD5544_MSB	= 1'b1;
 
-reg     clk_out;
-
-reg[3:0] clk_dvidecnt;
-
-always @ ( posedge clk or posedge reset )
-begin
-  if(reset)begin
-	  clk_dvidecnt <= 0;
-	  clk_out <= 0;
-  end else begin
-	  if(clk_dvidecnt == 4'd1)begin
-		  clk_dvidecnt <= 0;
-		  clk_out <= ~clk_out;
-	  end else begin
-		   clk_dvidecnt <= clk_dvidecnt + 1'b1;
-	  end
-  end
-end
+//reg     clk_out;
+//
+//reg[3:0] clk_dvidecnt;
+//
+//always @ ( posedge clk or posedge reset )
+//begin
+//  if(reset)begin
+//	  clk_dvidecnt <= 0;
+//	  clk_out <= 0;
+//  end else begin
+//	  if(clk_dvidecnt == 4'd1)begin
+//		  clk_dvidecnt <= 0;
+//		  clk_out <= ~clk_out;
+//	  end else begin
+//		   clk_dvidecnt <= clk_dvidecnt + 1'b1;
+//	  end
+//  end
+//end
 
 reg		ad5544_trig_reg1,
 		ad5544_trig_reg2;
-always @ ( posedge clk_out or posedge reset)
+always @ ( posedge clk or posedge reset)
 begin
   if(reset)begin
     ad5544_trig_reg1 <= 0;
@@ -113,7 +113,7 @@ end
 wire	ad5544_trig_posedge;
 assign	ad5544_trig_posedge = ad5544_trig_reg1 & ( !ad5544_trig_reg2 );
 
-always @ ( posedge clk_out or posedge reset )
+always @ ( posedge clk or posedge reset )
 begin
 	if( reset )
 		curr_state	<= RESET;
@@ -191,7 +191,7 @@ begin
 	endcase
 end
 		
-always @ ( posedge clk_out or posedge reset )
+always @ ( posedge clk or posedge reset )
 begin
 	if( reset )
 	begin

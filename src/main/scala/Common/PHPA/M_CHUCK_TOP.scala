@@ -13,43 +13,14 @@ import spinal.lib.{CounterFreeRun, master}
 
 import scala.collection.mutable.ArrayBuffer
 
-case class PHPA_MMCME2() extends Component{
-  val io = new Bundle{
-    val sysclk = in Bool()
-    val reset = in Bool()
-    val clk_100M = out Bool()
-    val clk_200M = out Bool()
-    val locked = out Bool()
-  }
-  noIoPrefix()
-
-  val attr = new MMCME2Attrs
-  attr.CLKIN1_PERIOD = 40.0
-  attr.CLKFBOUT_MULT_F = 40
-  attr.CLKOUT0_DIVIDE_F = 10.0
-  attr.CLKOUT1_DIVIDE = 5
-
-  val sysclk = BUFG.on(io.sysclk)
-
-  val mmcm = MMCME2_BASE(attr).setName("MMCME2_BASE")
-  mmcm.CLKIN1 := sysclk
-  mmcm.RST := io.reset
-  mmcm.PWRDWN := False
-  mmcm.CLKFBIN := mmcm.CLKFBOUT
-  io.clk_100M := IBUF.on(mmcm.CLKOUT0)
-  io.clk_200M := IBUF.on(mmcm.CLKOUT1)
-  io.locked := mmcm.LOCKED
-}
-
-case class PHPA82_NEW(sramLayout : SramLayout) extends Component{
+case class M_CHUCK_TOP(sramLayout : SramLayout) extends Component{
   val io = new Bundle{
     val emif = master(SramInterface(sramLayout))
-    val ad5544 = Seq.fill(3)(master(Ad5544Interface()))
+    val ad5544 = Seq.fill(1)(master(Ad5544Interface()))
     val ad7606 = master(Ad7606_Interface(true,false,false))
     val grating_io = Seq.fill(2)(master(Grating_IO()))
     val bissc = Seq.fill(4)(master(BissCInterface()))
     val sysclk = in Bool()
-    //val reset_n = in Bool()
     val led = out Bool()
     for(i <- 0 until 2){
       grating_io(i).IO_A_READ.setName(s"IO_A_READ_$i")
@@ -124,9 +95,9 @@ case class PHPA82_NEW(sramLayout : SramLayout) extends Component{
       io.emif <> emif_interface.io.emif
 
       val apbMapping = ArrayBuffer[(Apb3, SizeMapping)]()
-      val ad5544_ctrl = Apb3_AD5544(8,16,3,0x000100)
-      for(i <- 0 until 3){
-        ad5544_ctrl.io.ad5544(i) <> io.ad5544(i)
+      val ad5544_ctrl = Apb_SawTooth(8,16,0x000100)
+      for(i <- 0 until 1){
+        ad5544_ctrl.io.ad5544 <> io.ad5544(i)
         io.ad5544(i).CS.setName(s"AD5544_CS_$i")
         io.ad5544(i).LDAC.setName(s"AD5544_LDAC_$i")
         //io.ad5544(i).MSB.setName(s"AD5544_MSB_$i")
@@ -178,18 +149,24 @@ case class PHPA82_NEW(sramLayout : SramLayout) extends Component{
       }
       io.led := ledtemp
 
-//      val ila_probe=ila("1",io.emif.emif_cs,io.emif.emif_oe,io.emif.emif_we,io.emif.emif_data.write,io.emif.emif_data.writeEnable,io.emif.emif_data.read,io.emif.emif_addr,emif_interface.io.apb.PADDR,emif_interface.io.apb.PENABLE,
-//        emif_interface.io.apb.PREADY,emif_interface.io.apb.PSEL,emif_interface.io.apb.PWDATA,emif_interface.io.apb.PRDATA)
-//      io.ad5544(0).addAttribute("MARK_DEBUG","TRUE")
+      //      val ila_probe=ila("1",io.emif.emif_cs,io.emif.emif_oe,io.emif.emif_we,io.emif.emif_data.write,io.emif.emif_data.writeEnable,io.emif.emif_data.read,io.emif.emif_addr,emif_interface.io.apb.PADDR,emif_interface.io.apb.PENABLE,
+      //        emif_interface.io.apb.PREADY,emif_interface.io.apb.PSEL,emif_interface.io.apb.PWDATA,emif_interface.io.apb.PRDATA)
+      //      io.ad5544(0).addAttribute("MARK_DEBUG","TRUE")
       gtx_ctrl.io.input.addAttribute("MARK_DEBUG","TRUE")
       gtx_ctrl.io.output.addAttribute("MARK_DEBUG","TRUE")
       auro.status.addAttribute("MARK_DEBUG","TRUE")
 
     }
-    addPrePopTask(()=>genRegFileByMarkdown("PHPA82_NEWBOARD"))
+    addPrePopTask(()=>genRegFileByMarkdown("M_CHUCK_BOARD"))
   }
 }
 
-object PHPA82_NEW extends App{
-  SpinalConfig(anonymSignalPrefix = "temp",headerWithDate = true).generateVerilog(InOutWrapper(PHPA82_NEW(SramLayout(19, 16))))
+object M_CHUCK_TOP extends App{
+  SpinalConfig(
+    anonymSignalPrefix = "temp",
+    headerWithDate = true,
+    nameWhenByFile = false,
+    genLineComments = false
+//    targetDirectory = "D:/PHPA82/PHPA82_M_CHUCK/PHPA82_NEWBOARD.srcs/sources_1/new/"
+  ).generateVerilog(InOutWrapper(M_CHUCK_TOP(SramLayout(19, 16))))
 }

@@ -4,7 +4,7 @@ import Common.PHPA.regFileGen.{genRegFileByMarkdown, regInsert}
 import spinal.core._
 import spinal.lib.bus.amba3.apb.{Apb3, Apb3Config, Apb3SlaveFactory}
 import spinal.lib.bus.misc.BusSlaveFactoryDelayed
-import spinal.lib.{IMasterSlave, master, slave}
+import spinal.lib.{Delay, IMasterSlave, master, slave}
 
 case class Ad5544Interface() extends Bundle with IMasterSlave{
   val CS = Bool
@@ -73,8 +73,13 @@ case class AD5544_Ctrl(ad5544_num : Int,baseaddr : Long = 0) extends Component{
         bus.driveAndRead(set_dacdata(i)(1),4*(5*i+1),0,s"DAC_OUT_${1+4*i}")
         bus.driveAndRead(set_dacdata(i)(2),4*(5*i+2),0,s"DAC_OUT_${2+4*i}")
         bus.driveAndRead(set_dacdata(i)(3),4*(5*i+3),0,s"DAC_OUT_${3+4*i}")
-        bus.driveAndRead(triger_temp(i),4*(5*i+4),0,s"Trigger_$i")
-        triger(i) := triger_temp(i) && bus.isWriting(4*(5*i+4))
+        bus.read(triger_temp(i),4*(5*i+4),0,s"Trigger_$i")
+        when(bus.isWriting(4*(5*i+4))){
+          triger_temp(i) := True
+        }otherwise{
+          triger_temp(i) := False
+        }
+        triger(i) := triger_temp(i)|Delay(triger_temp(i),1,init = False)|Delay(triger_temp(i),2,init = False)|Delay(triger_temp(i),3,init = False)
       }
       bus.addDataModel("AD5544_Ctrl",baseaddr)
     }
