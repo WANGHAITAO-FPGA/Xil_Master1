@@ -129,8 +129,8 @@ case class Apb_TxRxSimple(lookback : Boolean = false) extends Component{
   busctrl.driveAndRead(frame_head(15 downto 0),536,0,documentation = "frame_head(15 downto 0)")
 
 
-  val ila_probe=ila("1",tx_tick_touch,tx_head,frame_head,io.apb.PADDR,io.apb.PENABLE,
-    io.apb.PREADY,io.apb.PSEL,io.apb.PWDATA,io.apb.PRDATA)
+//  val ila_probe=ila("1",tx_tick_touch,tx_head,frame_head,io.apb.PADDR,io.apb.PENABLE,
+//    io.apb.PREADY,io.apb.PSEL,io.apb.PWDATA,io.apb.PRDATA)
 }
 
 object Apb_TxRxSimple extends App{

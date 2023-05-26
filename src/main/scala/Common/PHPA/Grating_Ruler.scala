@@ -1,9 +1,10 @@
 package Common.PHPA
 
+import Common.PHPA.ZeroClear_Type.newElement
 import spinal.core._
 import spinal.lib._
 
-object Grating_Type extends SpinalEnum{
+object Grating_Type extends SpinalEnum {
   val BISSC,ENCODER,ENDAT = newElement()
 }
 import Grating_Type._
@@ -20,8 +21,8 @@ case class Grating_Mode() extends Bundle{
 }
 
 case class BissCInterface() extends Bundle with IMasterSlave{
-  val clk = Bool
-  val data = Bool
+  val clk = Bool()
+  val data = Bool()
   override def asMaster(): Unit = {
     out(clk)
     in(data)
@@ -66,7 +67,7 @@ case class Grating_IO() extends Bundle with IMasterSlave{
 
 case class Grating_Ruler(nameid : Int) extends Component{
   val io = new Bundle{
-    val config = slave Flow(Grating_Mode())
+    val config = slave(Flow(Grating_Mode()))
     val grating_io = master(Grating_IO())
     val bissc = slave(BissCInterface())
     val encoder = slave(EncoderInterface())
@@ -83,20 +84,20 @@ case class Grating_Ruler(nameid : Int) extends Component{
   }
   noIoPrefix()
 
-  io.grating_io.IO_A_WRITE := Mux(io.config.mode=== BISSC,io.bissc.clk,Mux(io.config.mode=== ENDAT,io.endat.clk,False))
+  io.grating_io.IO_A_WRITE := Mux(io.config.mode === BISSC,io.bissc.clk,Mux(io.config.mode=== ENDAT,io.endat.clk,False))
 
-  io.grating_io.IO_A_WRITEENABLE := Mux((io.config.mode=== BISSC)||(io.config.mode=== ENDAT),True,False)
+  io.grating_io.IO_A_WRITEENABLE := Mux((io.config.mode === BISSC)||(io.config.mode=== ENDAT),True,False)
 
   io.grating_io.IO_B_WRITE := io.endat.write
 
-  io.grating_io.IO_B_WRITEENABLE := Mux((io.config.mode=== BISSC)||(io.config.mode=== ENCODER),False,io.endat.writeEnable)
+  io.grating_io.IO_B_WRITEENABLE := Mux((io.config.mode === BISSC)||(io.config.mode=== ENCODER),False,io.endat.writeEnable)
 
-  io.bissc.data := Mux(io.config.mode=== BISSC,io.grating_io.IO_B_READ,False)
+  io.bissc.data := Mux(io.config.mode === BISSC,io.grating_io.IO_B_READ,False)
 
-  io.encoder.aphase := Mux(io.config.mode=== ENCODER,io.grating_io.IO_A_READ,False)
-  io.encoder.bphase := Mux(io.config.mode=== ENCODER,io.grating_io.IO_B_READ,False)
+  io.encoder.aphase := Mux(io.config.mode === ENCODER,io.grating_io.IO_A_READ,False)
+  io.encoder.bphase := Mux(io.config.mode === ENCODER,io.grating_io.IO_B_READ,False)
 
-  io.endat.read := Mux(io.config.mode=== ENDAT,io.grating_io.IO_B_READ,False)
+  io.endat.read := Mux(io.config.mode === ENDAT,io.grating_io.IO_B_READ,False)
 
   io.grating_io.IO_C_WRITE := False
   io.grating_io.IO_C_WRITEENABLE := False

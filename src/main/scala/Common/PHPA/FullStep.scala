@@ -64,7 +64,6 @@ case class FullStep(samplewidth: Int, samplecount: Int) extends Component {
 //  }
   val c_rom = Mem(Sample, samplecount).initBigInt(c_romSamples,true)
   val d1_rom = Mem(Sample, samplecount).initBigInt(d1_romSamples,true)
-//  val d2_rom = Mem(Sample, samplecount).initBigInt(d2_romSamples,true)
 
   val i = Reg(UInt(log2Up(samplecount) bits)) init 0
   when(i < samplecount -1){

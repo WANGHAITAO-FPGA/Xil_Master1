@@ -26,17 +26,72 @@ case class Ad7606_Interface(withos : Boolean = true, withrange : Boolean = false
     if(withrange) out(range) else null
     if(withwr) out(wr) else null
   }
-  data.setName("AD7606_data_in")
-  busy.setName("AD7606_busy")
-  firstdata.setName("AD7606_frstdata")
-  if(withos) os.setName("AD7606_os") else null
-  cs.setName("AD7606_cs")
-  rd.setName("AD7606_rd")
-  reset.setName("AD7606_reset")
-  convsta.setName("AD7606_convsta")
-  convstb.setName("AD7606_convstb")
-  if(withrange) range.setName("AD7606_range") else null
-  if(withwr) wr.setName("AD7606_wr") else null
+//  data.setName("AD7606_data_in")
+//  busy.setName("AD7606_busy")
+//  firstdata.setName("AD7606_frstdata")
+//  if(withos) os.setName("AD7606_os") else null
+//  cs.setName("AD7606_cs")
+//  rd.setName("AD7606_rd")
+//  reset.setName("AD7606_reset")
+//  convsta.setName("AD7606_convsta")
+//  convstb.setName("AD7606_convstb")
+//  if(withrange) range.setName("AD7606_range") else null
+//  if(withwr) wr.setName("AD7606_wr") else null
+}
+
+case class AD7606(withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false) extends Component{
+  val io = new Bundle{
+    val ad_7606 = master(Ad7606_Interface(withos,withrange,withwr))
+    val adc_data = master Flow(Vec(Bits(16 bits),8))
+  }
+  noIoPrefix()
+
+  val ad7606 = new BlackBox {
+    setDefinitionName("AD7606_DATA")
+    val clk = in Bool()
+    val reset = in Bool()
+    val sample_en = in Bool()
+    val ad_data = in UInt(16 bits)
+    val ad_busy = in Bool()
+    val first_data = in Bool()
+    val ad_os = out UInt(3 bits)
+    val ad_cs = out Bool()
+    val ad_rd = out Bool()
+    val ad_reset = out Bool()
+    val ad_convsta = out Bool()
+    val ad_convstb = out Bool()
+    val ad_range = out Bool()
+    val ad_ch1_o = out UInt(16 bits)
+    val ad_ch2_o = out UInt(16 bits)
+    val ad_ch3_o = out UInt(16 bits)
+    val ad_ch4_o = out UInt(16 bits)
+    val ad_ch5_o = out UInt(16 bits)
+    val ad_ch6_o = out UInt(16 bits)
+    val ad_ch7_o = out UInt(16 bits)
+    val ad_ch8_o = out UInt(16 bits)
+    val ad_data_valid_o = out Bool()
+    mapClockDomain(clock = clk,reset = reset)
+    addRTLPath("D:/SCALA/SRIO/CYP1401/AD7606_DATA.v")
+  }
+  ad7606.sample_en := True
+  ad7606.ad_data := io.ad_7606.data.asUInt
+  ad7606.ad_busy := io.ad_7606.busy
+  ad7606.first_data := io.ad_7606.firstdata
+  io.ad_7606.os := ad7606.ad_os
+  io.ad_7606.cs := ad7606.ad_cs
+  io.ad_7606.rd := ad7606.ad_rd
+  io.ad_7606.reset := ad7606.ad_reset
+  io.ad_7606.convsta := ad7606.ad_convsta
+  io.ad_7606.convstb := ad7606.ad_convstb
+  io.adc_data.payload(0) := ad7606.ad_ch1_o.asBits
+  io.adc_data.payload(1) := ad7606.ad_ch2_o.asBits
+  io.adc_data.payload(2) := ad7606.ad_ch3_o.asBits
+  io.adc_data.payload(3) := ad7606.ad_ch4_o.asBits
+  io.adc_data.payload(4) := ad7606.ad_ch5_o.asBits
+  io.adc_data.payload(5) := ad7606.ad_ch6_o.asBits
+  io.adc_data.payload(6) := ad7606.ad_ch7_o.asBits
+  io.adc_data.payload(7) := ad7606.ad_ch8_o.asBits
+  io.adc_data.valid := ad7606.ad_data_valid_o
 }
 
 case class AD7606_Ctrl(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false,baseaddr : Long = 0) extends Component{

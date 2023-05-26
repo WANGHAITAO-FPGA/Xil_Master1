@@ -1,5 +1,6 @@
 // Generator : SpinalHDL v1.8.0    git head : 4e3563a282582b41f4eaafc503787757251d23ea
 // Component : FullStep
+// Git hash  : bf388a32266ad3492c07dd49ce6523dee03a9e57
 
 `timescale 1ns/1ps
 
@@ -26,7 +27,7 @@ module FullStep (
   wire       [0:0]    _zz_d2_data_4;
   wire       [15:0]   Sample;
   reg        [8:0]    i;
-  wire                when_FullStep_l70;
+  wire                when_FullStep_l69;
   reg [15:0] c_rom [0:351];
   reg [15:0] d1_rom [0:351];
 
@@ -61,18 +62,18 @@ module FullStep (
     end
   end
 
-  assign when_FullStep_l70 = (i < 9'h15f); // @[BaseType.scala 305:24]
-  assign c_data = _zz_c_rom_port0; // @[FullStep.scala 75:13]
-  assign d1_data = _zz_d1_rom_port0; // @[FullStep.scala 76:14]
-  assign d2_data = _zz_d2_data[15:0]; // @[FullStep.scala 77:14]
+  assign when_FullStep_l69 = (i < 9'h15f); // @[BaseType.scala 305:24]
+  assign c_data = _zz_c_rom_port0; // @[FullStep.scala 74:13]
+  assign d1_data = _zz_d1_rom_port0; // @[FullStep.scala 75:14]
+  assign d2_data = _zz_d2_data[15:0]; // @[FullStep.scala 76:14]
   always @(posedge clk or posedge reset) begin
     if(reset) begin
       i <= 9'h0; // @[Data.scala 400:33]
     end else begin
-      if(when_FullStep_l70) begin
-        i <= (i + 9'h001); // @[FullStep.scala 71:7]
+      if(when_FullStep_l69) begin
+        i <= (i + 9'h001); // @[FullStep.scala 70:7]
       end else begin
-        i <= 9'h0; // @[FullStep.scala 73:7]
+        i <= 9'h0; // @[FullStep.scala 72:7]
       end
     end
   end

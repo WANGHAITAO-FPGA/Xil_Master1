@@ -9,17 +9,20 @@ case class Rx_Preamble(datawidth : Int) extends Component{
     val input = slave(Stream(Fragment(Bits(datawidth bits))))
     val frame_head = in Bits(64 bits)
     val output = master(Stream(Fragment(Bits(datawidth bits))))
+    val trigger = out Bool()
   }
   noIoPrefix()
 
   val frame_head = Reg(Bits(64 bits))
   frame_head := io.frame_head
   val startDelimiter = frame_head(31 downto 0)##frame_head(63 downto 32)
+  val triggerDelimiter = B"x00F3F2F1"##frame_head(63 downto 32)
   val startDelimiterWidth = datawidth*2
   val history = History(io.input, 0 until startDelimiterWidth/datawidth, when = io.input.fire)
   val historyDataCat = B(Cat(history.map(_.payload.fragment).reverse))
   val hit = history.map(_.valid).andR && historyDataCat === startDelimiter
   val inFrame = RegInit(False)
+  val trigger = history.map(_.valid).andR && historyDataCat === triggerDelimiter && io.input.payload.last
 
   io.output.valid := False
   io.output.payload  := io.input.payload
@@ -38,6 +41,7 @@ case class Rx_Preamble(datawidth : Int) extends Component{
       }
     }
   }
+  io.trigger := RegNext(trigger)
 }
 
 case class Rx_Checker(dataWidth : Int) extends Component {
@@ -104,12 +108,14 @@ case class RxSimpleBus(addrwidth : Int, datawidth : Int, usecrc : Boolean = true
     val input = slave(Stream(Fragment(Bits(datawidth bits))))
     val frame_head = in Bits(64 bits)
     val ram_txbundle = master(Ram_TxBundle(addrwidth,datawidth))
+    val trigger = out Bool()
   }
   noIoPrefix()
 
   val rxpreamble = Rx_Preamble(datawidth)
   rxpreamble.io.frame_head := io.frame_head
   rxpreamble.io.input << io.input
+  io.trigger := rxpreamble.io.trigger
 
   val rxchecker = Rx_Checker(datawidth)
   rxchecker.io.input << rxpreamble.io.output

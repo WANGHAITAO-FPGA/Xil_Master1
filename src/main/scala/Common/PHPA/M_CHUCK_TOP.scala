@@ -149,12 +149,9 @@ case class M_CHUCK_TOP(sramLayout : SramLayout) extends Component{
       }
       io.led := ledtemp
 
-      //      val ila_probe=ila("1",io.emif.emif_cs,io.emif.emif_oe,io.emif.emif_we,io.emif.emif_data.write,io.emif.emif_data.writeEnable,io.emif.emif_data.read,io.emif.emif_addr,emif_interface.io.apb.PADDR,emif_interface.io.apb.PENABLE,
-      //        emif_interface.io.apb.PREADY,emif_interface.io.apb.PSEL,emif_interface.io.apb.PWDATA,emif_interface.io.apb.PRDATA)
-      //      io.ad5544(0).addAttribute("MARK_DEBUG","TRUE")
-      gtx_ctrl.io.input.addAttribute("MARK_DEBUG","TRUE")
-      gtx_ctrl.io.output.addAttribute("MARK_DEBUG","TRUE")
-      auro.status.addAttribute("MARK_DEBUG","TRUE")
+//      gtx_ctrl.io.input.addAttribute("MARK_DEBUG","TRUE")
+//      gtx_ctrl.io.output.addAttribute("MARK_DEBUG","TRUE")
+//      auro.status.addAttribute("MARK_DEBUG","TRUE")
 
     }
     addPrePopTask(()=>genRegFileByMarkdown("M_CHUCK_BOARD"))
@@ -166,7 +163,7 @@ object M_CHUCK_TOP extends App{
     anonymSignalPrefix = "temp",
     headerWithDate = true,
     nameWhenByFile = false,
-    genLineComments = false
-//    targetDirectory = "D:/PHPA82/PHPA82_M_CHUCK/PHPA82_NEWBOARD.srcs/sources_1/new/"
+    genLineComments = false,
+    targetDirectory = "D:/PHPA82/PHPA82_M_CHUCK/PHPA82_NEWBOARD.srcs/sources_1/new/"
   ).generateVerilog(InOutWrapper(M_CHUCK_TOP(SramLayout(19, 16))))
 }

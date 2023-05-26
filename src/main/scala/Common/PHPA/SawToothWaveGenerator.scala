@@ -1,5 +1,6 @@
 package Common.PHPA
 
+import Common.PHPA.ila_test.ila
 import Common.PHPA.regFileGen.regInsert
 import Common.Xil_BlackBox.{AD5544, AD5544_Ctrl, Ad5544Interface}
 import spinal.core._
@@ -73,7 +74,7 @@ case class SawToothData(data_num : Int) extends Bundle{
   val data = Seq.fill(data_num)(Bits(16 bits))
 }
 
-case class SawTooth(stepBits : Int = 8, data_num : Int) extends Component{
+case class SawTooth(stepBits : Int = 15, data_num : Int) extends Component{
   val io = new Bundle{
     val sawtooth_io = Seq.fill(data_num)(SawToothWaveGeneratorIO(stepBits))
     val sawtooth_data = master Flow(SawToothData(data_num))
@@ -93,11 +94,14 @@ case class SawTooth(stepBits : Int = 8, data_num : Int) extends Component{
     io.sawtooth_data.payload.data(i) := sawtoothwavegenerator(i).io.output.asBits
   }
   io.sawtooth_data.valid := Delay(tick,2,init = False)
+
+//  val ila_probe=ila("1",io.sawtooth_io(0).start,io.sawtooth_io(0).step,io.sawtooth_io(0).stop,io.sawtooth_io(0).step,io.sawtooth_io(0).init,
+//    io.sawtooth_data.payload.data(0),io.sawtooth_data.valid)
 }
 
 case class SawToothTop(baseaddr : Long = 0) extends Component{
   val io = new Bundle{
-    val sawtooth_io = Seq.fill(4)(SawToothWaveGeneratorIO(8))
+    val sawtooth_io = Seq.fill(4)(SawToothWaveGeneratorIO(15))
     val ad5544 = master(Ad5544Interface())
     val analog_mode = in Bool()
     val analog_setdata = in Vec(Bits(16 bits),4)
@@ -131,33 +135,41 @@ case class SawToothTop(baseaddr : Long = 0) extends Component{
   }
   noIoPrefix()
 
-  val sawtooth = SawTooth(8,4)
+  val sawtooth = SawTooth(15,4)
   for(i <- 0 until 4){
     sawtooth.io.sawtooth_io(i) <> io.sawtooth_io(i)
   }
   val da5544 = AD5544()
   da5544.io.ad5544 <> io.ad5544
 
-  val set_data = Vec(Reg(Bits(16 bits)),4)
-  val trigger = Reg(Bool()) init False
-  when(io.analog_mode){
-    set_data(0) := sawtooth.io.sawtooth_data.payload.data(0)
-    set_data(1) := sawtooth.io.sawtooth_data.payload.data(1)
-    set_data(2) := sawtooth.io.sawtooth_data.payload.data(2)
-    set_data(3) := sawtooth.io.sawtooth_data.payload.data(3)
-    trigger := sawtooth.io.sawtooth_data.valid
-  }otherwise{
-    set_data(0) := io.analog_setdata(0)
-    set_data(1) := io.analog_setdata(1)
-    set_data(2) := io.analog_setdata(2)
-    set_data(3) := io.analog_setdata(3)
-    trigger := io.analog_trigger
-  }
-  da5544.io.set_dadata(0) := set_data(0)
-  da5544.io.set_dadata(1) := set_data(1)
-  da5544.io.set_dadata(2) := set_data(2)
-  da5544.io.set_dadata(3) := set_data(3)
-  da5544.io.triger := trigger
+//  val set_data = Vec(Reg(Bits(16 bits)),4)
+//  val trigger = Reg(Bool()) init False
+//  when(io.analog_mode){
+//    set_data(0) := sawtooth.io.sawtooth_data.payload.data(0)
+//    set_data(1) := sawtooth.io.sawtooth_data.payload.data(1)
+//    set_data(2) := sawtooth.io.sawtooth_data.payload.data(2)
+//    set_data(3) := sawtooth.io.sawtooth_data.payload.data(3)
+//    trigger := sawtooth.io.sawtooth_data.valid
+//  }otherwise{
+//    set_data(0) := io.analog_setdata(0)
+//    set_data(1) := io.analog_setdata(1)
+//    set_data(2) := io.analog_setdata(2)
+//    set_data(3) := io.analog_setdata(3)
+//    trigger := io.analog_trigger
+//  }
+//  da5544.io.set_dadata(0) := set_data(0)
+//  da5544.io.set_dadata(1) := set_data(1)
+//  da5544.io.set_dadata(2) := set_data(2)
+//  da5544.io.set_dadata(3) := set_data(3)
+//  da5544.io.triger := trigger
+  val valid = Reg(Bool()) init False
+  valid := sawtooth.io.sawtooth_data.valid|Delay(sawtooth.io.sawtooth_data.valid,1,init = False)|Delay(sawtooth.io.sawtooth_data.valid,2,init = False)|Delay(sawtooth.io.sawtooth_data.valid,3,init = False)
+
+  da5544.io.set_dadata(0) := Mux(io.analog_mode, sawtooth.io.sawtooth_data.payload.data(0), io.analog_setdata(0))
+  da5544.io.set_dadata(1) := Mux(io.analog_mode, sawtooth.io.sawtooth_data.payload.data(1), io.analog_setdata(1))
+  da5544.io.set_dadata(2) := Mux(io.analog_mode, sawtooth.io.sawtooth_data.payload.data(2), io.analog_setdata(2))
+  da5544.io.set_dadata(3) := Mux(io.analog_mode, sawtooth.io.sawtooth_data.payload.data(3), io.analog_setdata(3))
+  da5544.io.triger := Mux(io.analog_mode, valid, io.analog_trigger)
 }
 
 case class Apb_SawTooth(addrwidth : Int, datawidth : Int, baseaddr : Long = 0) extends Component{
