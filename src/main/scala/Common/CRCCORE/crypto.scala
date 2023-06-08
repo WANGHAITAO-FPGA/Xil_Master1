@@ -1,4 +1,4 @@
-package CRCCORE
+package Common.CRCCORE
 
 import scala.collection.mutable.ListBuffer
 import spinal.lib.tools._

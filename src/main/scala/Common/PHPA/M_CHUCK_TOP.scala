@@ -19,7 +19,8 @@ case class M_CHUCK_TOP(sramLayout : SramLayout) extends Component{
     val ad5544 = Seq.fill(1)(master(Ad5544Interface()))
     val ad7606 = master(Ad7606_Interface(true,false,false))
     val grating_io = Seq.fill(2)(master(Grating_IO()))
-    val bissc = Seq.fill(4)(master(BissCInterface()))
+//    val bissc = Seq.fill(4)(master(BissCInterface()))
+    val encoder = master(EncoderInterface())
     val sysclk = in Bool()
     val led = out Bool()
     for(i <- 0 until 2){
@@ -121,13 +122,17 @@ case class M_CHUCK_TOP(sramLayout : SramLayout) extends Component{
       grating_b_ctrl.io.encoder_filter_clk := mmcm.io.clk_200M
       apbMapping += grating_b_ctrl.io.apb -> (0x000400, 256 Bytes)
 
-      val bissc_ctrl = Apb3_Bissc(8,16,4,0x000500)
-      for(i <- 0 until 4){
-        io.bissc(i) <> bissc_ctrl.io.bissc(i)
-        io.bissc(i).clk.setName(s"bissc_clk_$i")
-        io.bissc(i).data.setName(s"bissc_data_$i")
-      }
-      apbMapping += bissc_ctrl.io.apb -> (0x000500, 256 Bytes)
+//      val bissc_ctrl = Apb3_Bissc(8,16,4,0x000500)
+//      for(i <- 0 until 4){
+//        io.bissc(i) <> bissc_ctrl.io.bissc(i)
+//        io.bissc(i).clk.setName(s"bissc_clk_$i")
+//        io.bissc(i).data.setName(s"bissc_data_$i")
+//      }
+//      apbMapping += bissc_ctrl.io.apb -> (0x000500, 256 Bytes)
+      val encoder_ctrl = Apb3_Encoder(8,16,0x000500)
+      encoder_ctrl.io.encoder <> io.encoder
+      encoder_ctrl.io.encoder_filter_clk := mmcm.io.clk_200M
+      apbMapping += encoder_ctrl.io.apb -> (0x000500, 256 Bytes)
 
       val gtx_ctrl = Apb_TxRxSimple()
       auro.s_axi_tx.s_axi_tx << gtx_ctrl.io.output

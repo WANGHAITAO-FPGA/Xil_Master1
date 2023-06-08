@@ -1,6 +1,5 @@
-package CRCCORE
+package Common.CRCCORE
 
-import CRCCORE.crypto
 import spinal.core._
 import crypto._
 

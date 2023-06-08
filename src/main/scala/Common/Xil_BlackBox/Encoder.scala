@@ -1,8 +1,12 @@
 package Common.Xil_BlackBox
 
-import Common.PHPA.EncoderInterface
+import Common.PHPA.regFileGen.regInsert
+import Common.PHPA.{EncoderInterface, Grating_IO, Grating_Mode}
 import spinal.core._
 import spinal.lib._
+import spinal.lib.bus.misc.BusSlaveFactoryDelayed
+import Common.PHPA.ZeroClear_Type.AUTO
+import spinal.lib.bus.amba3.apb.{Apb3, Apb3Config, Apb3SlaveFactory}
 
 object ZeroState extends SpinalEnum {
   val ZIDLE, ZWAIT, ZSTOP = newElement()
@@ -88,6 +92,70 @@ case class EncoderTop() extends Component{
   io.postion := encoder.encoder_position_out
 }
 
+case class EncoderCtrl(baseaddr : Long = 0) extends Component{
+  val io = new Bundle{
+    val config = slave Flow(Grating_Mode())
+    val encoder = master(EncoderInterface())
+    val encoder_postion = out Bits(32 bits)
+    val encoder_zero_singal = out Bool()
+    val encoder_filter_clk = in Bool()
+    val encoder_postion_reset = in Bool()
+    val busy = in Bool()
+
+    def driveFrom(bus : BusSlaveFactoryDelayed, baseAddress : Int = 0)= new Area{
+      require(bus.busDataWidth == 16 || bus.busDataWidth == 32)
+      val encoder_postion_temp = Reg(Bits(32 bits)) init 0
+      val encoder_zero_singal_temp = Reg(Bool()) init False
+      val encoder_postion_reset_temp = Reg(Bool()) init False
+      encoder_postion_reset := encoder_postion_reset_temp
+
+      when(!busy){
+        encoder_postion_temp := encoder_postion
+        encoder_zero_singal_temp := encoder_zero_singal
+      }
+      bus.busDataWidth match {
+        case 16 =>
+          bus.read(encoder_postion_temp(31 downto 16),4,0,"Encoder Postion bit(31:16)")
+          bus.read(encoder_postion_temp(15 downto 0),6,0,"Encoder Postion bit(15:0)")
+        case 32 =>
+          bus.read(encoder_postion_temp(31 downto 0),4,0,"Encoder Postion bit(31:0)")
+      }
+      bus.read(encoder_zero_singal_temp,16,0,"encoder_zero_singal")
+      bus.driveAndRead(encoder_postion_reset_temp,20,0,"encoder_postion_reset")
+
+      bus.driveAndRead(config.payload.mode,28,0,"no__use")
+      bus.driveAndRead(config.payload.zeroclear_mode,32,0,"encoder zero clear mode,0---AUTO,1----MANUAL")
+      bus.driveAndRead(config.payload.zero_counter,36,0,"encoder zero hold time_cnt, time= clk * time_cnt")
+      bus.addDataModel("Encoder_Ctrl",baseaddr)
+    }
+  }
+
+  val encoder = EncoderTop()
+  encoder.io.encoder <> io.encoder
+  io.encoder_postion := encoder.io.postion
+  io.encoder_zero_singal := encoder.io.zero_singal
+  encoder.io.filter_clk := io.encoder_filter_clk
+  encoder.io.zero_counter := io.config.zero_counter
+  encoder.io.postion_reset := Mux((io.config.zeroclear_mode === AUTO),encoder.io.zero_singal,io.encoder_postion_reset)
+}
+
+case class Apb3_Encoder(addrwidth : Int, datawidth : Int,baseaddr : Long = 0) extends Component{
+  val io = new Bundle{
+    val apb  = slave(Apb3(Apb3Config(addrwidth,datawidth)))
+    val encoder = master(EncoderInterface())
+    val encoder_filter_clk = in Bool()
+  }
+  noIoPrefix()
+  val bus_ctrl = Apb3SlaveFactory(io.apb)
+  val encoder_ctrl = EncoderCtrl(baseaddr)
+  io.encoder <> encoder_ctrl.io.encoder
+  encoder_ctrl.io.encoder_filter_clk := io.encoder_filter_clk
+
+  val bridge = encoder_ctrl.io.driveFrom(bus_ctrl)
+  encoder_ctrl.io.busy := bus_ctrl.askRead || bus_ctrl.doRead
+}
+
+
 object Encoder extends App{
-  SpinalVerilog(new EncoderTop())
+  SpinalVerilog(new Apb3_Encoder(8,16))
 }

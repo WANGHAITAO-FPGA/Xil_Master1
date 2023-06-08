@@ -1,6 +1,5 @@
-package CRCCORE
+package Common.CRCCORE
 
-import CRCCORE.{CRC5, CRCPolynomial, PolynomialGF2}
 import spinal.core._
 import spinal.lib.bus.misc.BusSlaveFactory
 import spinal.lib.{EndiannessSwap, Reverse, slave}

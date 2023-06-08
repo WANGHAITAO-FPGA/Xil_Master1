@@ -1,4 +1,4 @@
-package CRCCORE
+package Common.CRCCORE
 
 import spinal.core._
 

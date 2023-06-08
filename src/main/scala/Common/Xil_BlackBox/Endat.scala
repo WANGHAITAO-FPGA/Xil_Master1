@@ -1,6 +1,6 @@
 package Common.Xil_BlackBox
 
-import CRCCORE._
+import Common.CRCCORE.{CRC5, CRCCombinational, CRCCombinationalCmdMode, CRCCombinationalConfig}
 import Common.PHPA._
 import spinal.core._
 import spinal.lib.fsm.{EntryPoint, State, StateMachine}
