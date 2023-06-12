@@ -21,13 +21,10 @@ case class Endat_Top() extends Component{
     mmcm.io.reset := False
 
     val area = new ClockingArea(ClockDomain(mmcm.io.clk_100M,~mmcm.io.locked)){
-      val endat_ctrl = Endat_Ctrl(16,4000)
-      val endat_ip = ENDAT22_IP(SpiMasterCtrlGenerics(1,8,16))
-      endat_ip.io.spi <> endat_ctrl.io.spi
-      endat_ip.io.endat <> io.endat
-      endat_ip.io.clk := mmcm.io.clk_100M
-      endat_ip.io.reset := mmcm.io.locked
-      endat_ip.io.nstr := endat_ctrl.io.endat_ip_trigger
+      val endat_ipctrl = Endat_IpCtrl()
+      endat_ipctrl.io.endat <> io.endat
+      endat_ipctrl.io.clk <> mmcm.io.clk_100M
+      endat_ipctrl.io.reset <> ~mmcm.io.locked
 
       val ledtemp = Reg(Bool()) init False
 
@@ -45,7 +42,7 @@ object Endat_Top extends App{
   SpinalConfig(
     anonymSignalPrefix = "temp",
     headerWithDate = true,
-    targetDirectory = "E:/YW/Endat_IP_Test/Endat_IP_Test.srcs/sources_1/new/",
+    targetDirectory = "D:/YW/Endat_IP_Test/Endat_IP_Test.srcs/sources_1/new/",
     nameWhenByFile = false,
     genLineComments = false
   ).generateVerilog(Endat_Top())

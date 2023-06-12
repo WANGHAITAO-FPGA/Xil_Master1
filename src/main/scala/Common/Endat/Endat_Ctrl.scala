@@ -1,9 +1,12 @@
 package Common.Endat
 
 import Common.Endat.Identity.{Get_Bytenumber, Identity_Addr}
+import Common.PHPA.EndatInterface
 import Common.PHPA.ila_test.ila
+import Common.Xil_BlackBox.ENDAT22_IP
 import spinal.core._
-import spinal.lib.com.spi.SpiMaster
+import spinal.lib.bus.misc.BusSlaveFactoryDelayed
+import spinal.lib.com.spi.{SpiMaster, SpiMasterCtrlGenerics}
 import spinal.lib.fsm.{EntryPoint, State, StateMachine}
 import spinal.lib.misc.Timer
 import spinal.lib.{Flow, master, slave}
@@ -13,6 +16,8 @@ case class Endat_Ctrl(dataWidth : Int, Wait_Tcnt : Int) extends Component{
     val spi = master(SpiMaster(1))
     val postion = out Bits(64 bits)
     val endat_ip_trigger = out Bool()
+    val status = out Bits(48 bits)
+    val tick = out Bool()
   }
   noIoPrefix()
 
@@ -41,6 +46,10 @@ case class Endat_Ctrl(dataWidth : Int, Wait_Tcnt : Int) extends Component{
 
   val endat_ip_trigger = Reg(Bool())
   endat_ip_trigger := True
+
+  val tick = Reg(Bool())
+  tick := False
+  io.tick := tick
 
   val fsm = new StateMachine{
     val counter = Reg(UInt(log2Up(Wait_Tcnt)+1 bits)) init 0
@@ -191,18 +200,62 @@ case class Endat_Ctrl(dataWidth : Int, Wait_Tcnt : Int) extends Component{
       whenIsActive{
         cmddata.valid := False
         when(rsp_valid.fall()){
+          tick := True
           postion := endat_spi_ctrl.io.rspdata.payload.RspData(1)##endat_spi_ctrl.io.rspdata.payload.RspData(2)##endat_spi_ctrl.io.rspdata.payload.RspData(3)##endat_spi_ctrl.io.rspdata.payload.RspData(4)
           goto(Dummy_State_2)
         }
       }
     }
     io.postion := postion
+    io.status := status
   }
   endat_spi_ctrl.io.cmddata := cmddata
   io.endat_ip_trigger := True
-//  val ila_probe=ila("1",io.postion,status)
 }
 
-object Endat_Ctrl extends App{
-  SpinalVerilog(Endat_Ctrl(16,500))
+case class Endat_IpCtrl() extends Component{
+  val io = new Bundle{
+    val endat = master(EndatInterface())
+    val postion = out Bits(38 bits)
+    val rm = out Bool()
+    val tick = out Bool()
+    val clk = in Bool()
+    val reset = in Bool()
+    def driveFrom(bus : BusSlaveFactoryDelayed, baseAddress : Int = 0)= new Area{
+      val busy = in Bool()
+      require(bus.busDataWidth == 16 || bus.busDataWidth == 32)
+      val postion_temp = Reg(Bits(38 bits)) init 0
+      val rm_temp = Reg(Bits(1 bits)) init 0
+      when(!busy){
+        postion_temp := postion
+        rm_temp := rm.asBits
+      }
+      bus.read(postion_temp(15 downto 0),0,0,"endat postion[15:0]")
+      bus.read(postion_temp(31 downto 16),4,0,"endat postion[31:16]")
+      bus.read(postion_temp(37 downto 32),8,0,"endat postion[37:32]")
+      bus.read(rm_temp(0 downto 0),12,0,"endat index")
+    }
+  }
+  noIoPrefix()
+
+  val area = new ClockingArea(ClockDomain(io.clk,io.reset)){
+    val endat_ctrl = Endat_Ctrl(16,4000)
+    val endat_ip = ENDAT22_IP(SpiMasterCtrlGenerics(1,8,16))
+    endat_ip.io.spi <> endat_ctrl.io.spi
+    endat_ip.io.endat <> io.endat
+    endat_ip.io.clk := io.clk
+    endat_ip.io.reset := !io.reset
+    endat_ip.io.nstr := endat_ctrl.io.endat_ip_trigger
+    io.postion := endat_ctrl.io.postion.resized
+    io.rm := endat_ctrl.io.status(14 downto 14).asBool
+    io.tick := endat_ctrl.io.tick
+
+    val ila_probe=ila("0",io.endat.clk,io.endat.write,io.endat.writeEnable,io.endat.read,io.postion,io.rm,io.tick)
+  }
+}
+
+
+
+object Endat_IpCtrl extends App{
+  SpinalVerilog(Endat_IpCtrl())
 }

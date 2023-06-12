@@ -43,7 +43,7 @@ case class ENDAT22_IP(generics : SpiMasterCtrlGenerics) extends Component{
     endat22_s.n_int6 := False
     endat22_s.n_int7 := False
 
-    val ila_probe=ila("0",io.spi.ss(0),io.spi.mosi,io.spi.sclk,io.spi.miso,io.clk2,io.endat.clk,io.endat.write,io.endat.writeEnable,io.endat.read,io.nstr)
+//    val ila_probe=ila("0",io.spi.ss(0),io.spi.mosi,io.spi.sclk,io.spi.miso,io.clk2,io.endat.clk,io.endat.write,io.endat.writeEnable,io.endat.read,io.nstr)
   }
 }
 
