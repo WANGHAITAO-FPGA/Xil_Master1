@@ -1,10 +1,13 @@
 package Common.Endat
 
 import Common.CRCCORE.{CRC5, CRC6, CRCCombinational, CRCCombinationalCmdMode, CRCCombinationalConfig}
+import Common.PHPA.ila_test.ila
 import spinal.core._
 import spinal.lib.com.spi.SpiKind
 import spinal.lib.fsm.{EntryPoint, State, StateMachine}
 import spinal.lib.{Counter, IMasterSlave, master}
+
+import scala.math.pow
 
 case class LspiInterface() extends Bundle with IMasterSlave{
   val sclk = Bool()
@@ -46,7 +49,7 @@ case class LSPI_Ctrl(datawidth : Int, sclkToogle : Int) extends Component{
   crc_cal.io.cmd.mode := crc_mode.INIT
 
   val sclk = Reg(Bool()) init True
-  val postion = Reg(Bits(datawidth bits)) init ((1<<datawidth) - 1)
+  val postion_temp = Reg(Bits(datawidth bits)) init (1<<datawidth)-1
 
   val fsm = new StateMachine{
     val counter = Counter(datawidth*2)
@@ -54,7 +57,7 @@ case class LSPI_Ctrl(datawidth : Int, sclkToogle : Int) extends Component{
       whenIsActive{
         when(tick.rise()){
           counter := 0
-          postion := 0
+          postion_temp := 0
           timer.reset := True
           crc_valid := False
           goto(Send_Zero)
@@ -67,7 +70,7 @@ case class LSPI_Ctrl(datawidth : Int, sclkToogle : Int) extends Component{
           timer.reset := True
           counter.increment()
           when(counter === (1)){
-            postion := io.postion
+            postion_temp := io.postion
             counter := 0
             goto(Send_Data)
           }
@@ -85,7 +88,7 @@ case class LSPI_Ctrl(datawidth : Int, sclkToogle : Int) extends Component{
           }
           when(counter === (2*datawidth-1)){
             counter := 0
-            postion := crc_cal.io.crc.resizeLeft(datawidth)
+            postion_temp := crc_cal.io.crc.resizeLeft(datawidth)
             goto(Send_Crc)
           }
         }otherwise{
@@ -99,7 +102,7 @@ case class LSPI_Ctrl(datawidth : Int, sclkToogle : Int) extends Component{
           timer.reset := True
           counter.increment()
           when(counter === (2*5-1)){
-            postion := ((1<<datawidth) - 1)
+            postion_temp := ((1<<datawidth) - 1)
             crc_valid := True
             goto(Wait_Start)
           }
@@ -108,6 +111,8 @@ case class LSPI_Ctrl(datawidth : Int, sclkToogle : Int) extends Component{
     }
   }
   io.lspi.sclk := RegNext(((fsm.counter.lsb ^ io.kind.cpha)) ^ io.kind.cpol)
-  io.lspi.mosi := RegNext(postion(datawidth-1 - (fsm.counter >> 1)))
-  crc_payload := RegNext(postion(datawidth-1 - (fsm.counter >> 1))).asBits
+  io.lspi.mosi := RegNext(postion_temp(datawidth-1 - (fsm.counter >> 1)))
+  crc_payload := RegNext(postion_temp(datawidth-1 - (fsm.counter >> 1))).asBits
+//  val ila_probe=ila("1",io.postion,postion_temp,io.tick,
+//    io.lspi.sclk,io.lspi.mosi)
 }

@@ -6,15 +6,16 @@ import spinal.lib.bus.amba3.apb.{Apb3, Apb3Config, Apb3SlaveFactory}
 import spinal.lib.bus.misc.BusSlaveFactoryDelayed
 import spinal.lib.{Flow, Fragment, PulseCCByToggle, Stream, master, slave}
 
-case class TxRx_Top(usecrc : Boolean = true) extends Component{
+case class TxRx_Top(reg_datawidth : Int ,usecrc : Boolean = true) extends Component{
   val io = new Bundle{
     val input = slave(Stream(Fragment(Bits(32 bits))))
     val output = master(Stream(Fragment(Bits(32 bits))))
     val tx_tick = in Bool()
     val tx_head = in Bits(32 bits)
     val frame_head = in Bits(64 bits)
-    val Board_TxData = in Vec(Bits(16 bits),128)
-    val Board_RxData = out Vec(Bits(16 bits),128)
+    val Board_TxData = if(reg_datawidth == 16) (in Vec(Bits(reg_datawidth bits),128)) else in Vec(Bits(reg_datawidth bits),64)
+    val Board_RxData = if(reg_datawidth == 16)(out Vec(Bits(reg_datawidth bits),128)) else (out Vec(Bits(reg_datawidth bits),64))
+    val busy = out Bool()
 //    val gtx_clk = in Bool()
   }
   noIoPrefix()
@@ -24,7 +25,7 @@ case class TxRx_Top(usecrc : Boolean = true) extends Component{
 
     val rx_simple = RxSimpleBus(10,32,usecrc)
 
-    val board_reg = PHPA_Board_Reg()
+    val board_reg = PHPA_Board_Reg(reg_datawidth)
 
     io.output << tx_simple.io.output
     tx_simple.io.tx_tick := io.tx_tick
@@ -43,6 +44,7 @@ case class TxRx_Top(usecrc : Boolean = true) extends Component{
 
     board_reg.io.Board_TxData := io.Board_TxData
     io.Board_RxData := board_reg.io.Board_RxData
+    io.busy := board_reg.io.busy
 //  }
 }
 
@@ -74,7 +76,7 @@ case class Apb_TxRxSimple(lookback : Boolean = false) extends Component{
   tx_tick_touch := False
 
   val gtx_area = new ClockingArea(gtx_clkdomain){
-    val txrx = TxRx_Top()
+    val txrx = TxRx_Top(16)
   }
 
   val pulse = new PulseCCByToggle(this.clockDomain,gtx_clkdomain)

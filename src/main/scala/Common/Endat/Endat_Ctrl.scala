@@ -118,7 +118,7 @@ case class Endat_Ctrl(dataWidth : Int, Wait_Tcnt : Int) extends Component{
     val Dummy_State_2: State = new State{
       whenIsActive{
         counter := counter + 1
-        when(counter > 50){
+        when(counter > 300){            //50 100k
           counter := 0
           goto(Load_SW_Strobe)
 //          goto(Rd_Receive_Status_Reg)
@@ -213,9 +213,10 @@ case class Endat_Ctrl(dataWidth : Int, Wait_Tcnt : Int) extends Component{
   io.endat_ip_trigger := True
 }
 
-case class Endat_IpCtrl() extends Component{
+case class Endat_IpCtrl(uselspi : Boolean = false) extends Component{
   val io = new Bundle{
     val endat = master(EndatInterface())
+    val lspi = if(uselspi) master(LspiInterface()) else null
     val postion = out Bits(38 bits)
     val rm = out Bool()
     val tick = out Bool()
@@ -249,8 +250,17 @@ case class Endat_IpCtrl() extends Component{
     io.postion := endat_ctrl.io.postion.resized
     io.rm := endat_ctrl.io.status(14 downto 14).asBool
     io.tick := endat_ctrl.io.tick
+    if(uselspi){
+      val lspi_ctrl = LSPI_Ctrl(38,8)
+      lspi_ctrl.io.postion := endat_ctrl.io.postion(37 downto 0)
+      lspi_ctrl.io.kind.cpha := True
+      lspi_ctrl.io.kind.cpol := True
+      lspi_ctrl.io.tick := endat_ctrl.io.tick
+      lspi_ctrl.io.lspi <> io.lspi
+    }
 
-    val ila_probe=ila("0",io.endat.clk,io.endat.write,io.endat.writeEnable,io.endat.read,io.postion,io.rm,io.tick)
+//    val ila_probe=ila("0",io.endat.clk,io.endat.write,io.endat.writeEnable,io.endat.read,io.postion,io.rm,io.tick,
+//      io.lspi.sclk,io.lspi.mosi)
   }
 }
 
