@@ -1,5 +1,6 @@
 package Board_Test
 
+import Common.PHPA.ila_test.ila
 import spinal.core._
 import spinal.lib._
 import spinal.lib.com.eth.{Crc, CrcKind}
@@ -125,7 +126,7 @@ case class RxSimpleBus(addrwidth : Int, datawidth : Int, usecrc : Boolean = true
   rx_final.io.crc_error := rxchecker.io.error
   rx_final.io.output.ready := True
 
-  val waddr   = Reg(UInt(addrwidth bits)) init 0
+  val waddr   = Reg(UInt(addrwidth bits)) init 0x108
   val wdata   = Reg(Bits(datawidth bits))
   val wenable = Reg(Bool()) init False
   val a_flag = Reg(Bool()) init False
@@ -133,13 +134,13 @@ case class RxSimpleBus(addrwidth : Int, datawidth : Int, usecrc : Boolean = true
   wenable := rx_final.io.output.fire && !rx_final.io.output.payload.last
   when(rx_final.io.output.fire){
     when(!a_flag){
-      waddr := 0x100
+      waddr := 0x108
       a_flag := True
     }otherwise{
       waddr := waddr + 4
     }
     when(rx_final.io.output.payload.last){
-      waddr := 0
+      waddr := 0x108
       a_flag := False
     }
   }
@@ -148,4 +149,6 @@ case class RxSimpleBus(addrwidth : Int, datawidth : Int, usecrc : Boolean = true
   io.ram_txbundle.WADDR := waddr
   io.ram_txbundle.WDATA := wdata
   io.ram_txbundle.WENABLE := wenable
+
+  val ila_probe=ila("1",waddr,wdata,wenable)
 }

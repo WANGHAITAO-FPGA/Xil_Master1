@@ -17,7 +17,7 @@ case class ZYNQ_IO() extends Bundle with IMasterSlave{
   }
 }
 
-case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num : Int = 4, ad5544_num : Int = 0) extends Component{
+case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num : Int = 4, ad5544_num : Int = 3) extends Component{
   val io = new Bundle{
     val AD7606 = Seq.fill(ad7606_num)(master(Ad7606_Interface(true,false,false)))
     val BISSC = Seq.fill(bissc_num)(master(BissCInterface()))
@@ -90,8 +90,8 @@ case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num :
     io.IO.TTL_IO_Out := io.M_EN_TTL
     io.IO.OPT_IO_Out := io.FPGA_DO
 
-    val ila_probe=ila("0",io.adc_data(0).payload(0),io.adc_data(0).payload(1),io.adc_data(0).payload(2),io.adc_data(0).payload(3),io.adc_data(0).payload(4),io.adc_data(0).payload(5),io.adc_data(0).payload(6),io.adc_data(0).payload(7),
-      io.adc_data(1).payload(0),io.adc_data(1).payload(1),io.adc_data(1).payload(2),io.adc_data(1).payload(3),io.adc_data(1).payload(4),io.adc_data(1).payload(5),io.adc_data(1).payload(6),io.adc_data(1).payload(7))
+//    val ila_probe=ila("0",io.adc_data(0).payload(0),io.adc_data(0).payload(1),io.adc_data(0).payload(2),io.adc_data(0).payload(3),io.adc_data(0).payload(4),io.adc_data(0).payload(5),io.adc_data(0).payload(6),io.adc_data(0).payload(7),
+//      io.adc_data(1).payload(0),io.adc_data(1).payload(1),io.adc_data(1).payload(2),io.adc_data(1).payload(3),io.adc_data(1).payload(4),io.adc_data(1).payload(5),io.adc_data(1).payload(6),io.adc_data(1).payload(7))
   }
 }
 

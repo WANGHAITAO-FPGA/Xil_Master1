@@ -56,7 +56,7 @@ case class TxSimpleBus(addrwidth : Int, datawidth : Int) extends Component{
     val Wait_Start: State = new State with EntryPoint {
       whenIsActive{
         when(tx_tick.rise()){
-          RADDR := 0
+          RADDR := 8
           RENABLE := True
           send_length := 0
           goto(Send_Data)

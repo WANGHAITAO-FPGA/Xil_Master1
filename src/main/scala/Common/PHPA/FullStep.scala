@@ -52,16 +52,6 @@ case class FullStep(samplewidth: Int, samplecount: Int) extends Component {
     BigInt((d1_line * (Math.pow(2.0, samplewidth - 1) - 1)).toLong)
   }
 
-//  val d2_romSamples = (0 until samplecount).map { sampleid =>
-//    val d2_line = sampleid match {
-//      case i if i < samplecount / 16 => -d1_line1
-//      case i if i <= samplecount / 16 * 7 - 1 => -(d1_line2 + d1_slope2 * i)
-//      case i if i <= samplecount / 16 * 9 => -d1_line3
-//      case i if i <= samplecount / 16 * 15 => -(d1_line4 + d1_slope4 * i)
-//      case _ => -d1_line5
-//    }
-//    BigInt((d2_line * (Math.pow(2.0, samplewidth - 1) - 1)).toLong)
-//  }
   val c_rom = Mem(Sample, samplecount).initBigInt(c_romSamples,true)
   val d1_rom = Mem(Sample, samplecount).initBigInt(d1_romSamples,true)
 
