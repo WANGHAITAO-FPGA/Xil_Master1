@@ -19,7 +19,7 @@ case class ZYNQ_IO() extends Bundle with IMasterSlave{
 
 case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num : Int = 4, ad5544_num : Int = 3) extends Component{
   val io = new Bundle{
-    val AD7606 = Seq.fill(ad7606_num)(master(Ad7606_Interface(true,false,false)))
+    val AD7606 = Seq.fill(ad7606_num)(master(Ad7606_Interface(false,false,false)))
     val BISSC = Seq.fill(bissc_num)(master(BissCInterface()))
     val ENCODER = Seq.fill(encoder_num)(master(EncoderInterface()))
     val AD5544 = Seq.fill(ad5544_num)(master(Ad5544Interface()))
@@ -48,7 +48,7 @@ case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num :
       io.Bissc_Pos(i) <> bissc(i).io.postion
     }
 
-    val ad7606 = Seq.fill(ad7606_num)(new AD7606())
+    val ad7606 = Seq.fill(ad7606_num)(new AD7606(withos = false))
     for(i <- 0 until ad7606_num){
       ad7606(i).io.ad_7606 <> io.AD7606(i)
       ad7606(i).io.adc_data <> io.adc_data(i)

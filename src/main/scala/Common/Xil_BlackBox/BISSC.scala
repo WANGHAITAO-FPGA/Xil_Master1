@@ -29,7 +29,7 @@ case class BISSC() extends Component{
 
     mapClockDomain(clock = clk,reset = reset)
 
-    addRTLPath("D:/SCALA/Xil_Master/rtl/BISS_Position.v")
+    addRTLPath("D:/Spinal_Workspace/Xil_Master1/rtl/BISS_Position.v")
   }
 
   io.bissc.clk <> bissc.enc_clk
@@ -67,7 +67,7 @@ case class BISSC_Ctrl(bissc_num : Int,baseaddr : Long = 0) extends Component{
   }
   noIoPrefix()
 
-  val bissc = Seq.fill(bissc_num)(BISSC())
+  val bissc = Seq.fill(bissc_num)(new BISSC())
   for(i <- 0 until bissc_num){
     bissc(i).io.bissc <> io.bissc(i)
     io.postion(i) := bissc(i).io.postion
@@ -95,4 +95,8 @@ case class Apb3_Bissc(addrwidth : Int, datawidth : Int, bissc_num : Int,baseaddr
 
 object BISSC extends App{
   SpinalVerilog(Apb3_Bissc(8,16,4))
+}
+
+object test extends App{
+  SpinalVerilog(new BISSC())
 }

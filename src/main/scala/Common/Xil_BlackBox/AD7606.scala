@@ -77,7 +77,7 @@ case class AD7606(withos : Boolean = true, withrange : Boolean = false, withwr :
   ad7606.ad_data := io.ad_7606.data.asUInt
   ad7606.ad_busy := io.ad_7606.busy
   ad7606.first_data := io.ad_7606.firstdata
-  io.ad_7606.os := ad7606.ad_os
+  if(withos) io.ad_7606.os := ad7606.ad_os else null
   io.ad_7606.cs := ad7606.ad_cs
   io.ad_7606.rd := ad7606.ad_rd
   io.ad_7606.reset := ad7606.ad_reset

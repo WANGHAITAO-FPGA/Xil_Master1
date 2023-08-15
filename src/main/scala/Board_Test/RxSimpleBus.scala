@@ -150,5 +150,5 @@ case class RxSimpleBus(addrwidth : Int, datawidth : Int, usecrc : Boolean = true
   io.ram_txbundle.WDATA := wdata
   io.ram_txbundle.WENABLE := wenable
 
-  val ila_probe=ila("1",waddr,wdata,wenable)
+//  val ila_probe=ila("1",waddr,wdata,wenable)
 }
