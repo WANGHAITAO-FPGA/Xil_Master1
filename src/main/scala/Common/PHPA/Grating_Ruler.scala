@@ -20,6 +20,11 @@ case class Grating_Mode() extends Bundle{
   val zero_counter = UInt(16 bits)
 }
 
+case class Encoder_Config() extends Bundle{
+  val zeroclear_mode = ZeroClear_Type()
+  val zero_counter = UInt(16 bits)
+}
+
 case class BissCInterface() extends Bundle with IMasterSlave{
   val clk = Bool()
   val data = Bool()

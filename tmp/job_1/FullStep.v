@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.8.0    git head : 4e3563a282582b41f4eaafc503787757251d23ea
 // Component : FullStep
-// Git hash  : bf388a32266ad3492c07dd49ce6523dee03a9e57
+// Git hash  : 34a517ca350f4ac57e8ae3cad85709ae0a5d519e
 
 `timescale 1ns/1ps
 
@@ -27,7 +27,7 @@ module FullStep (
   wire       [0:0]    _zz_d2_data_4;
   wire       [15:0]   Sample;
   reg        [8:0]    i;
-  wire                when_FullStep_l69;
+  wire                when_FullStep_l59;
   reg [15:0] c_rom [0:351];
   reg [15:0] d1_rom [0:351];
 
@@ -39,7 +39,7 @@ module FullStep (
   assign _zz_d1_data = 1'b1;
   assign _zz_d2_data_3 = 1'b1;
   initial begin
-    $readmemb("D:\\SCALA\\Xil_Master\\tmp\\job_1\\FullStep.v_toplevel_c_rom.bin",c_rom);
+    $readmemb("D:\\SpinalWorkSpace\\Xil_Master1\\tmp\\job_1\\FullStep.v_toplevel_c_rom.bin",c_rom);
   end
   always @(posedge clk) begin
     if(_zz_c_data) begin
@@ -48,7 +48,7 @@ module FullStep (
   end
 
   initial begin
-    $readmemb("D:\\SCALA\\Xil_Master\\tmp\\job_1\\FullStep.v_toplevel_d1_rom.bin",d1_rom);
+    $readmemb("D:\\SpinalWorkSpace\\Xil_Master1\\tmp\\job_1\\FullStep.v_toplevel_d1_rom.bin",d1_rom);
   end
   always @(posedge clk) begin
     if(_zz_d1_data) begin
@@ -62,18 +62,18 @@ module FullStep (
     end
   end
 
-  assign when_FullStep_l69 = (i < 9'h15f); // @[BaseType.scala 305:24]
-  assign c_data = _zz_c_rom_port0; // @[FullStep.scala 74:13]
-  assign d1_data = _zz_d1_rom_port0; // @[FullStep.scala 75:14]
-  assign d2_data = _zz_d2_data[15:0]; // @[FullStep.scala 76:14]
+  assign when_FullStep_l59 = (i < 9'h15f); // @[BaseType.scala 305:24]
+  assign c_data = _zz_c_rom_port0; // @[FullStep.scala 64:13]
+  assign d1_data = _zz_d1_rom_port0; // @[FullStep.scala 65:14]
+  assign d2_data = _zz_d2_data[15:0]; // @[FullStep.scala 66:14]
   always @(posedge clk or posedge reset) begin
     if(reset) begin
       i <= 9'h0; // @[Data.scala 400:33]
     end else begin
-      if(when_FullStep_l69) begin
-        i <= (i + 9'h001); // @[FullStep.scala 70:7]
+      if(when_FullStep_l59) begin
+        i <= (i + 9'h001); // @[FullStep.scala 60:7]
       end else begin
-        i <= 9'h0; // @[FullStep.scala 72:7]
+        i <= 9'h0; // @[FullStep.scala 62:7]
       end
     end
   end

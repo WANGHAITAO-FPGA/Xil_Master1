@@ -17,7 +17,7 @@ case class M_CHUCK_TOP(sramLayout : SramLayout) extends Component{
   val io = new Bundle{
     val emif = master(SramInterface(sramLayout))
     val ad5544 = Seq.fill(1)(master(Ad5544Interface()))
-    val ad7606 = master(Ad7606_Interface(true,false,false))
+    val ad7606 = master(Ad7606_Interface(true,false,false,16))
     val grating_io = Seq.fill(2)(master(Grating_IO()))
 //    val bissc = Seq.fill(4)(master(BissCInterface()))
     val encoder = master(EncoderInterface())

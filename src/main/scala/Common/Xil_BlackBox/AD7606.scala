@@ -1,14 +1,16 @@
 package Common.Xil_BlackBox
 
 import Common.PHPA.regFileGen.{genRegFileByMarkdown, regInsert}
-import spinal.core._
+import ZYNQ.AxiLite4DataConfig
+import spinal.core.{Reg, _}
 import spinal.lib.bus.amba3.apb.{Apb3, Apb3Config, Apb3SlaveFactory}
+import spinal.lib.bus.amba4.axilite.{AxiLite4, AxiLite4SlaveFactory, AxiLite4SpecRenamer}
 import spinal.lib.bus.misc.BusSlaveFactoryDelayed
 import spinal.lib.fsm.{EntryPoint, State, StateMachine}
 import spinal.lib.{Counter, IMasterSlave, master, slave}
 
-case class Ad7606_Interface(withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false) extends Bundle with IMasterSlave{
-  val data = Bits(16 bits)
+case class Ad7606_Interface(withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false, datawidth : Int) extends Bundle with IMasterSlave{
+  val data = Bits(datawidth bits)
   val busy = Bool()
   val firstdata = Bool()
   val os = if(withos) UInt(3 bits) else null
@@ -26,22 +28,11 @@ case class Ad7606_Interface(withos : Boolean = true, withrange : Boolean = false
     if(withrange) out(range) else null
     if(withwr) out(wr) else null
   }
-//  data.setName("AD7606_data_in")
-//  busy.setName("AD7606_busy")
-//  firstdata.setName("AD7606_frstdata")
-//  if(withos) os.setName("AD7606_os") else null
-//  cs.setName("AD7606_cs")
-//  rd.setName("AD7606_rd")
-//  reset.setName("AD7606_reset")
-//  convsta.setName("AD7606_convsta")
-//  convstb.setName("AD7606_convstb")
-//  if(withrange) range.setName("AD7606_range") else null
-//  if(withwr) wr.setName("AD7606_wr") else null
 }
 
 case class AD7606(withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false) extends Component{
   val io = new Bundle{
-    val ad_7606 = master(Ad7606_Interface(withos,withrange,withwr))
+    val ad_7606 = master(Ad7606_Interface(withos,withrange,withwr,16))
     val adc_data = master Flow(Vec(Bits(16 bits),8))
   }
   noIoPrefix()
@@ -77,7 +68,7 @@ case class AD7606(withos : Boolean = true, withrange : Boolean = false, withwr :
   ad7606.ad_data := io.ad_7606.data.asUInt
   ad7606.ad_busy := io.ad_7606.busy
   ad7606.first_data := io.ad_7606.firstdata
-  io.ad_7606.os := ad7606.ad_os
+  if(withos) io.ad_7606.os := ad7606.ad_os else null
   io.ad_7606.cs := ad7606.ad_cs
   io.ad_7606.rd := ad7606.ad_rd
   io.ad_7606.reset := ad7606.ad_reset
@@ -94,26 +85,11 @@ case class AD7606(withos : Boolean = true, withrange : Boolean = false, withwr :
   io.adc_data.valid := ad7606.ad_data_valid_o
 }
 
-case class AD7606_Ctrl(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false,baseaddr : Long = 0) extends Component{
+case class AD7606_N(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false, datawidth : Int = 16) extends Component{
   val io = new Bundle{
-    val ad_7606 = master(Ad7606_Interface(withos,withrange,withwr))
+    val ad_7606 = master(Ad7606_Interface(withos,withrange,withwr,datawidth))
     val sample_en = in Bool()
-    val adc_data = master Flow(Vec(Bits(16 bits),8))
-    val busy = in Bool()
-
-    def driveFrom(bus : BusSlaveFactoryDelayed, baseAddress : Int = 0)= new Area{
-      require(bus.busDataWidth == 16 || bus.busDataWidth == 32)
-      val adc_data_temp = Reg(Vec(Bits(16 bits),8))
-      when(!busy){
-        for(i <- 0 until 8){
-          adc_data_temp(i) := adc_data.payload(i)
-        }
-      }
-      for(i <- 0 until 8){
-        bus.read(adc_data_temp(i),4*i,0,s"ad7606_data_$i")
-      }
-      bus.addDataModel("AD7606_Ctrl",baseaddr)
-    }
+    val adc_data = master Flow(Vec(Bits(datawidth bits),8))
   }
   noIoPrefix()
 
@@ -139,7 +115,7 @@ case class AD7606_Ctrl(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, w
     val rd = Reg(Bool()) init True
     val convst = Reg(Bool()) init True
     val counter = Reg(UInt(log2Up(Wait_Tcnt)+1 bits)) init 0
-    val data = Vec(Reg(Bits(16 bits)),8) addTag(crossClockDomain)
+    val data = Vec(Reg(Bits(datawidth bits)),8) addTag(crossClockDomain)
     val i = Reg(UInt(4 bits)) init 0
     val valid = Reg(Bool())
     valid := False
@@ -249,17 +225,60 @@ case class AD7606_Ctrl(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, w
   }
 }
 
+case class AD7606_Ctrl(ad7606_num : Int, datawidth : Int, baseaddr : Long = 0) extends Component{
+  val io = new Bundle{
+    val ad_7606 = Seq.fill(ad7606_num)(master(Ad7606_Interface(false,false,false,datawidth)))
+    val adc_data = Seq.fill(ad7606_num)(master Flow(Vec(Bits(datawidth bits),8)))
+    val busy = in Bool()
+
+    def driveFrom(bus: BusSlaveFactoryDelayed, baseAddress: Int = 0) = new Area {
+      require(bus.busDataWidth == 16 || bus.busDataWidth == 32)
+      val adc_data_temp = Seq.fill(ad7606_num)(Reg(Vec(Bits(datawidth bits), 8)))
+      when(!busy) {
+        for (i <- 0 until ad7606_num) {
+          adc_data_temp(i)(0) := adc_data(i).payload(0)
+          adc_data_temp(i)(1) := adc_data(i).payload(1)
+          adc_data_temp(i)(2) := adc_data(i).payload(2)
+          adc_data_temp(i)(3) := adc_data(i).payload(3)
+          adc_data_temp(i)(4) := adc_data(i).payload(4)
+          adc_data_temp(i)(5) := adc_data(i).payload(5)
+          adc_data_temp(i)(6) := adc_data(i).payload(6)
+          adc_data_temp(i)(7) := adc_data(i).payload(7)
+        }
+      }
+      for (i <- 0 until ad7606_num) {
+        bus.read(adc_data_temp(i)(0), 4 * (8*i), 0, s"ad7606_data(0)_$i")
+        bus.read(adc_data_temp(i)(1), 4 * (8*i+1), 0, s"ad7606_data(1)_$i")
+        bus.read(adc_data_temp(i)(2), 4 * (8*i+2), 0, s"ad7606_data(2)_$i")
+        bus.read(adc_data_temp(i)(3), 4 * (8*i+3), 0, s"ad7606_data(3)_$i")
+        bus.read(adc_data_temp(i)(4), 4 * (8*i+4), 0, s"ad7606_data(4)_$i")
+        bus.read(adc_data_temp(i)(5), 4 * (8*i+5), 0, s"ad7606_data(5)_$i")
+        bus.read(adc_data_temp(i)(6), 4 * (8*i+6), 0, s"ad7606_data(6)_$i")
+        bus.read(adc_data_temp(i)(7), 4 * (8*i+7), 0, s"ad7606_data(7)_$i")
+      }
+      bus.addDataModel("AD7606_Ctrl", baseaddr)
+    }
+  }
+  noIoPrefix()
+
+  val ad7606 = Seq.fill(ad7606_num)(AD7606_N(5,20,false,datawidth = datawidth))
+  for(i <- 0 until ad7606_num){
+    ad7606(i).io.ad_7606 <> io.ad_7606(i)
+    io.adc_data(i) <> ad7606(i).io.adc_data
+    ad7606(i).io.sample_en := True
+  }
+}
+
 case class Apb_AD7606(addrwidth : Int, datawidth : Int,baseaddr : Long = 0) extends Component{
   val io = new Bundle{
     val apb  = slave(Apb3(Apb3Config(addrwidth,datawidth)))
-    val ad_7606 = master(Ad7606_Interface(true,false,false))
+    val ad_7606 = master(Ad7606_Interface(true,false,false,16))
   }
   noIoPrefix()
 
   val bus_ctrl = Apb3SlaveFactory(io.apb)
-  val ad7606 = AD7606_Ctrl(5,20,baseaddr = baseaddr)
-  ad7606.io.ad_7606 <> io.ad_7606
-  ad7606.io.sample_en := True
+  val ad7606 = AD7606_Ctrl(1,16)
+  ad7606.io.ad_7606(0) <> io.ad_7606
 
   val bridge = ad7606.io.driveFrom(bus_ctrl)
   ad7606.io.busy := bus_ctrl.askRead || bus_ctrl.doRead
@@ -268,4 +287,40 @@ case class Apb_AD7606(addrwidth : Int, datawidth : Int,baseaddr : Long = 0) exte
 
 object Apb_AD7606 extends App{
   SpinalConfig(anonymSignalPrefix = "temp",headerWithDate = true,enumPrefixEnable = false).generateVerilog(Apb_AD7606(8,16))
+}
+
+case class AxiLite_AD7606(ad7606_num : Int) extends Component{
+  val io =new Bundle{
+    val s_axi = slave(AxiLite4(AxiLite4DataConfig.getaxi4liteconfig))
+    val ad_7606 = Seq.fill(ad7606_num)(master(Ad7606_Interface(false,false,false,18)))
+    AxiLite4SpecRenamer(s_axi)
+  }
+  noIoPrefix()
+
+  val bus_ctrl = new AxiLite4SlaveFactory(io.s_axi)
+  val ad7606 = AD7606_Ctrl(3,18)
+  for (i <- 0 until ad7606_num) {
+    ad7606.io.ad_7606(i) <> io.ad_7606(i)
+    io.ad_7606(i).data.setName(s"data_$i")
+    io.ad_7606(i).reset.setName(s"reset_$i")
+//    io.ad_7606(i).os.setName(s"os_$i")
+    io.ad_7606(i).cs.setName(s"cs_$i")
+    io.ad_7606(i).busy.setName(s"busy_$i")
+    io.ad_7606(i).convsta.setName(s"convsta_$i")
+    io.ad_7606(i).convstb.setName(s"convstb_$i")
+    io.ad_7606(i).rd.setName(s"rd_$i")
+    io.ad_7606(i).firstdata.setName(s"firstdata_$i")
+  }
+  val bridge = ad7606.io.driveFrom(bus_ctrl)
+  ad7606.io.busy := False
+  addPrePopTask(()=>genRegFileByMarkdown("AD7606"))
+}
+
+object AxiLite_AD7606 extends App{
+  SpinalConfig(
+    headerWithDate = true,
+    nameWhenByFile = false,
+    enumPrefixEnable = false,
+    genLineComments = false
+  ).generateVerilog(AxiLite_AD7606(3))
 }

@@ -2,7 +2,7 @@ name := "Xil_Master"
 
 version := "0.1"
 
-scalaVersion := "2.12.16"
+scalaVersion := "2.12.15"
 
 val spinalVersion = "1.8.0"
 

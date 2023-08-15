@@ -82,7 +82,7 @@ case class Grating_Ctrl(nameid : Int,baseaddr : Long = 0) extends Component{
   io.config <> grating_ruler.io.config
   io.grating_io <> grating_ruler.io.grating_io
 
-  val bissc = BISSC()
+  val bissc = new BISSC()
   bissc.io.bissc <> grating_ruler.io.bissc
   io.bissc_postion := bissc.io.postion
 

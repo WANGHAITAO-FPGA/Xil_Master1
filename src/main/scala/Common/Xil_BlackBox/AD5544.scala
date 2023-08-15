@@ -42,7 +42,7 @@ case class AD5544() extends Component{
     val AD5544_DATA_IN3 = in Bits(16 bits)
     val AD5544_DATA_IN4 = in Bits(16 bits)
     mapClockDomain(clock = clk,reset = reset)
-    addRTLPath("D:/SCALA/Xil_Master/rtl/dac_ad5544.v")
+    addRTLPath("D:/SpinalWorkSpace/Xil_Master1/rtl/dac_ad5544.v")
   }
 
   io.ad5544.CS := da5544.AD5544_CS

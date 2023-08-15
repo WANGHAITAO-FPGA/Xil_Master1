@@ -29,7 +29,7 @@ case class ZYNQ_SDAC_TXRX(usecrc : Boolean, endcoder_num : Int = 4, bissc_num : 
 
   val rx_simple = RxSimpleBus(10,32,usecrc)
 
-  val sdac_reg = SDAC_REG()
+  val sdac_reg = SDAC_REG(10,endcoder_num,bissc_num,ad7606_num,ad5544_num)
 
   val timer = Timer(32)
   timer.io.tick := True
