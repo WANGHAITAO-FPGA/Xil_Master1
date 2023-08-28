@@ -19,7 +19,7 @@ case class ZYNQ_IO() extends Bundle with IMasterSlave{
 
 case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num : Int = 4, ad5544_num : Int = 3) extends Component{
   val io = new Bundle{
-    val AD7606 = Seq.fill(ad7606_num)(master(Ad7606_Interface(false,false,false,16)))
+    val AD7606 = Seq.fill(ad7606_num)(master(Ad7606_Interface(true,false,false)))
     val BISSC = Seq.fill(bissc_num)(master(BissCInterface()))
     val ENCODER = Seq.fill(encoder_num)(master(EncoderInterface()))
     val AD5544 = Seq.fill(ad5544_num)(master(Ad5544Interface()))
@@ -31,9 +31,9 @@ case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num :
     val adc_data = Seq.fill(ad7606_num)(master Flow(Vec(Bits(16 bits),8)))
     val M_Fault_TTL_Filter = out Bits(8 bits)
     val FPGA_DI_Filter = out Bits(16 bits)
-    val Encoder_Pos = if(encoder_num != 0) Seq.fill(encoder_num)(out Bits(32 bits))  else null
-    val Encoder_Zero_Keep = if(encoder_num != 0) Seq.fill(encoder_num)(out Bits(1 bits)) else null
-    val Encoder_Clr = if(encoder_num != 0) Seq.fill(encoder_num)(in Bits(1 bits)) else null
+    val Encoder_Pos = Seq.fill(encoder_num)(out Bits(32 bits))
+    val Encoder_Zero_Keep = Seq.fill(encoder_num)(out Bits(1 bits))
+    val Encoder_Clr = Seq.fill(encoder_num)(in Bits(1 bits))
     val Dac_Data = Seq.fill(ad5544_num)(in Vec(Bits(16 bits),4))
     val Dac_triger = Seq.fill(ad5544_num)(in Bool())
     val M_EN_TTL = in Bits(8 bits)
@@ -48,22 +48,20 @@ case class HardWare_Top(ad7606_num : Int = 3, bissc_num : Int = 4, encoder_num :
       io.Bissc_Pos(i) <> bissc(i).io.postion
     }
 
-    val ad7606 = Seq.fill(ad7606_num)(new AD7606(withos = false))
+    val ad7606 = Seq.fill(ad7606_num)(new AD7606())
     for(i <- 0 until ad7606_num){
       ad7606(i).io.ad_7606 <> io.AD7606(i)
       ad7606(i).io.adc_data <> io.adc_data(i)
     }
 
-    if(encoder_num != 0){
-      val encoder = Seq.fill(encoder_num)(new EncoderTop())
-      for (i <- 0 until encoder_num) {
-        encoder(i).io.encoder <> io.ENCODER(i)
-        encoder(i).io.zero_counter := 40000
-        encoder(i).io.filter_clk := io.clk_2
-        io.Encoder_Pos(i) := encoder(i).io.postion
-        io.Encoder_Zero_Keep(i) := encoder(i).io.zero_singal.asBits
-        encoder(i).io.postion_reset := io.Encoder_Clr(i).asBool
-      }
+    val encoder = Seq.fill(encoder_num)(new EncoderTop())
+    for(i <- 0 until encoder_num){
+      encoder(i).io.encoder <> io.ENCODER(i)
+      encoder(i).io.zero_counter := 40000
+      encoder(i).io.filter_clk := io.clk_2
+      io.Encoder_Pos(i) := encoder(i).io.postion
+      io.Encoder_Zero_Keep(i) := encoder(i).io.zero_singal.asBits
+      encoder(i).io.postion_reset := io.Encoder_Clr(i).asBool
     }
 
     val da5544 = Seq.fill(ad5544_num)(AD5544())
