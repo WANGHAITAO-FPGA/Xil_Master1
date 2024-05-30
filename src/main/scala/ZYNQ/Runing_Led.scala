@@ -48,3 +48,7 @@ case class Error_Check(tick_count : Int) extends Component{
 object Error_Check extends App{
   SpinalVerilog(new Error_Check(625000000))
 }
+
+object Runing extends App{
+  SpinalVerilog(Runing(2500))
+}

@@ -7,7 +7,8 @@ import spinal.lib.bus.amba3.apb.{Apb3, Apb3Config, Apb3SlaveFactory}
 import spinal.lib.bus.amba4.axilite.{AxiLite4, AxiLite4SlaveFactory, AxiLite4SpecRenamer}
 import spinal.lib.bus.misc.BusSlaveFactoryDelayed
 import spinal.lib.fsm.{EntryPoint, State, StateMachine}
-import spinal.lib.{Counter, IMasterSlave, master, slave}
+import spinal.lib.misc.Timer
+import spinal.lib.{Counter, IMasterSlave, PulseCCByToggle, master, slave}
 
 case class Ad7606_Interface(withos : Boolean = true, withrange : Boolean = false, withwr : Boolean = false, datawidth : Int) extends Bundle with IMasterSlave{
   val data = Bits(datawidth bits)
@@ -122,6 +123,16 @@ case class AD7606_N(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, with
 
     val reset = Reg(Bool()) init False
 
+    val timer_sample = new Timer(32)
+    timer_sample.io.tick := True
+    timer_sample.io.limit := 52
+    when(timer_sample.io.value >= timer_sample.io.limit) {
+      timer_sample.io.clear := True
+    } otherwise {
+      timer_sample.io.clear := False
+    }
+
+
     val fsm = new StateMachine{
       val Reset_Start: State = new State with EntryPoint {
         whenIsActive{
@@ -136,7 +147,7 @@ case class AD7606_N(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, with
       }
       val Wait_Start: State = new State{
         whenIsActive{
-          when(io.sample_en){
+          when(timer_sample.io.full.rise()){
             counter := 0
             goto(Convst_State)
           }
@@ -202,11 +213,11 @@ case class AD7606_N(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, with
       val Wait_Dummy: State = new State{
         whenIsActive{
           cs := True
-          counter := counter + 1
-          when(counter >= Wait_Tcnt){
-            counter := 0
+//          counter := counter + 1
+//          when(counter >= Wait_Tcnt){
+//            counter := 0
             goto(Wait_Start)
-          }
+//          }
         }
       }
     }
@@ -218,11 +229,18 @@ case class AD7606_N(clk_divide: Int,Wait_Tcnt: Int,withos : Boolean = true, with
     for(i <- 0 until 8){
       io.adc_data.payload(i) := data(i)
     }
-    io.adc_data.valid := valid
+//    io.adc_data.valid := valid.rise()
     if(withos) io.ad_7606.os := 0 else null
     if(withwr) io.ad_7606.wr := True else null
     if(withrange) io.ad_7606.range := True else null
   }
+  val pluse = new PulseCCByToggle(ClockDomain(sample_clk, this.clockDomain.reset), this.clockDomain)
+  pluse.io.pulseIn := sample_area.valid
+  io.adc_data.valid := pluse.io.pulseOut
+}
+
+object AD7606 extends App{
+  SpinalVerilog(AD7606_N(5,20))
 }
 
 case class AD7606_Ctrl(ad7606_num : Int, datawidth : Int, baseaddr : Long = 0) extends Component{
@@ -272,7 +290,7 @@ case class AD7606_Ctrl(ad7606_num : Int, datawidth : Int, baseaddr : Long = 0) e
 case class Apb_AD7606(addrwidth : Int, datawidth : Int,baseaddr : Long = 0) extends Component{
   val io = new Bundle{
     val apb  = slave(Apb3(Apb3Config(addrwidth,datawidth)))
-    val ad_7606 = master(Ad7606_Interface(true,false,false,16))
+    val ad_7606 = master(Ad7606_Interface(false,false,false,16))
   }
   noIoPrefix()
 

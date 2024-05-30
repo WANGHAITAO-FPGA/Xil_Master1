@@ -55,6 +55,7 @@ case class BisscMaster(datawidth : Int, bissc_clkToogle : Int, Wait_Tcnt : Int) 
           crc_valid := False
           buffer := 0
           counter := 0
+          crc_check := False
           goto(Wait_Ack)
         }
       }
@@ -142,6 +143,19 @@ case class BisscMaster(datawidth : Int, bissc_clkToogle : Int, Wait_Tcnt : Int) 
           }
           when(counter === (2*6-1)){
             counter := 0
+            goto(Dummy_OneCLk)
+          }
+        }
+      }
+    }
+    val Dummy_OneCLk: State = new State{
+      whenIsActive {
+        when(timer.bissc_clkToogleHit) {
+          counter := counter + 1
+          bissc_clk := ~bissc_clk
+          timer.reset := True
+          when(counter === (2 * 1 - 1)) {
+            counter := 0
             goto(Wait_Reset)
           }
         }
@@ -160,6 +174,7 @@ case class BisscMaster(datawidth : Int, bissc_clkToogle : Int, Wait_Tcnt : Int) 
     }
   }
   io.postion := RegNextWhen(postion,crc_check)
+//  io.postion := postion
   io.status := status
   io.bissc.clk := bissc_clk
 }

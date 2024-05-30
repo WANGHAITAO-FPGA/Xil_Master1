@@ -29,7 +29,7 @@ case class BISSC() extends Component{
 
     mapClockDomain(clock = clk,reset = reset)
 
-    addRTLPath("D:/Spinal_Workspace/Xil_Master1/rtl/BISS_Position.v")
+    addRTLPath("D:/SpinalWorkSpace/Xil_Master1/rtl/BISS_Position.v")
   }
 
   io.bissc.clk <> bissc.enc_clk
@@ -100,3 +100,4 @@ object BISSC extends App{
 object test extends App{
   SpinalVerilog(new BISSC())
 }
+

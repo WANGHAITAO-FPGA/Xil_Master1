@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+      srio_reg
+    </title>
+    <style>
+      div{
+          text-align: center;
+      }
+
+      body{ font-size: 0.8em; }
+      p.regif-title{
+          font-weight:800;
+          font-size:1.2em;
+      }
+      td{
+          white-space:pre-line; word-wrap: break-word; word-break: break-all;
+      }
+      td.fixWidth{
+          min-width:50px;
+          max-width:300px;
+      }
+      td.fixWidth2{
+          min-width:50px;
+          max-width:400px;
+      }
+      footer div p.info{
+          font-weight:300;
+          font-size:0.7em;
+      }
+      a {
+        color:black;text-decoration:none;
+      }
+      a:hover {
+          color:#09f;
+      }
+
+
+      .theme-default {
+          border: 3px solid #000;
+          border-collapse: collapse;
+      }
+      .theme-default td,
+      .theme-default th{
+          border: 1px solid #000;
+          border-top: 1px dashed #555;
+          border-bottom: 1px dashed #555;
+          padding: 3px;
+      }
+      .theme-default th{
+          background: #bbb;
+      }
+      .theme-default tbody td.reserved{
+          color: #bbb;
+          font-weight:200;
+          background : #eee;
+          /* text-decoration:line-through; */
+          text-decoration-color:#888;
+      }
+      .theme-default tbody tr.reg{
+          border-top: 2px solid #000;
+      }
+
+
+      .theme-spring{
+          border-collapse: collapse;
+          font-size: 1.0em;
+          min-width: 800px;
+          border-radius: 5px 5px 0 0 ;
+          overflow: hidden;
+          box-shadow: 0 -10px 20px rgba(0,0,0,0.15);
+      }
+      .theme-spring th,
+      .theme-spring td {
+          padding:5px 10px;
+      }
+      .theme-spring thead tr {
+          background-color: #009879;
+          color: #ffffff;
+          text-align:center;
+          font-weight: bold;
+      }
+      .theme-spring tbody tr{
+          border-bottom: 1px solid #ddd;
+      }
+      .theme-spring tbody td{
+          border: 1px solid #ddd;
+      }
+      .theme-spring tbody tr:last-of-type{
+          border-bottom: 3px solid #009879;
+      }
+      .theme-spring tbody tr.active-row {
+          font-weight: bold;
+          color: #009879;
+      }
+      .theme-spring tbody td.reserved{
+          color: #aaa;
+          background : #fffff0;
+          /* font-style:italic; */
+          font-weight:200;
+          font-size:1.0em;
+      }
+      .theme-spring tbody tr.green{
+          background :#fffff0 ;
+      }
+
+    </style>
+  </head>
+  <body>
+  <header align="center">
+  <p class="regif-title"> srio_reg register interface </p>
+  </header>
+  <div class="table">
+  <table  align="center" class="theme-default">
+      <br/>
+
+      <thead>
+        <tr align="center" >
+          <th>AddressOffset</th>
+          <th>RegName</th>
+          <th>Description</th>
+          <th>Width</th>
+          <th>Section</th>
+          <th>FieldName</th>
+          <th>R/W</th>
+          <th>Reset value</th>
+          <th>Field-Description</th>
+        </tr>
+      <thead>
+
+      <tbody>
+          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x0</td>
+            <td align="left" rowspan="1">MY_REG_VERSION</td>
+            <td class="fixWidth" align="center" rowspan="1">软件版本号 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">Version</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">软件版本号</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x8</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in0 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in0 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x10</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in1 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in1 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x18</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in2 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in2 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x20</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in3 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in3 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x28</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in4 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in4 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x30</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in5 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in5 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x38</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in6 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in6 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x40</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in7 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in7 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x48</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in8 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in8 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x50</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in9 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in9 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x58</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in10 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in10 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x60</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in11 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in11 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x68</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in12 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in12 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x70</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in13 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in13 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x78</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in14 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in14 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x80</td>
+            <td align="left" rowspan="1">REG_DATA_IN</td>
+            <td class="fixWidth" align="center" rowspan="1">data_in15 输入数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_in</td>
+            <td class="" align="center">RO</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in15 输入数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x88</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out0 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in0 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x90</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out1 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in1 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x98</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out2 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in2 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xA0</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out3 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in3 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xA8</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out4 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in4 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xB0</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out5 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in5 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xB8</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out6 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in6 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xC0</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out7 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in7 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xC8</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out8 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in8 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xD0</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out9 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in9 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xD8</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out10 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in10 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xE0</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out11 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in11 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xE8</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out12 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in12 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xF0</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out13 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in13 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0xF8</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out14 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in14 输出数据</td>
+          </tr>          <tr class="reg" align="left">
+            <td align="center" rowspan="1">0x100</td>
+            <td align="left" rowspan="1">REG_DATA_OUT</td>
+            <td class="fixWidth" align="center" rowspan="1">data_out15 输出数据 </td>
+            <td align="center" rowspan="1">64</td>
+            <td class="">[63:0]</td>
+            <td class="">data_out</td>
+            <td class="" align="center">RW</td>
+            <td class="" align="right">64'b0</td>
+            <td class=" fixWidth2">data_in15 输出数据</td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+  <footer align="center">
+  <div> <p class="info">Powered by <a href="https://spinalhdl.github.io/SpinalDoc-RTD/"> SpinalHDL </a> </p> </div>
+  <div> <p class="info"> Wed May 29 20:19:19 CST 2024 </p> </div>
+  </footer>
+  </body>
+</html>

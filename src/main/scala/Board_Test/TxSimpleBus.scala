@@ -1,9 +1,13 @@
 package Board_Test
 
 import spinal.core._
-import spinal.lib.com.eth.{Crc, CrcKind}
+import spinal.lib._
 import spinal.lib.fsm.{EntryPoint, State, StateMachine}
 import spinal.lib.{EndiannessSwap, Fragment, IMasterSlave, Stream, StreamFifo, master, slave, traversableOncePimped}
+import spinal.lib
+import spinal.lib.com.eth._
+
+
 
 case class Ram_RxBundle(addrwidth : Int, datawidth : Int) extends Bundle with IMasterSlave{
   val RENABLE = Bool()
@@ -56,7 +60,7 @@ case class TxSimpleBus(addrwidth : Int, datawidth : Int) extends Component{
     val Wait_Start: State = new State with EntryPoint {
       whenIsActive{
         when(tx_tick.rise()){
-          RADDR := 8
+          RADDR := 0
           RENABLE := True
           send_length := 0
           goto(Send_Data)
@@ -103,7 +107,8 @@ case class Tx_Crc(dataWidth : Int) extends Component{
   noIoPrefix()
   val emitCrc = RegInit(False) setWhen(io.input.lastFire) clearWhen(io.output.lastFire)
   val crc = Crc(CrcKind.Crc32, dataWidth)
-  crc.io.input << io.input.toFlowFire.translateWith(EndiannessSwap(io.input.payload))
+//  crc.io.input << io.input.toFlowFire.translateWith(EndiannessSwap(io.input.payload))
+  crc.io.input << io.input.toFlowFire.translateWith((io.input.payload))
   crc.io.flush := io.output.lastFire
 
   io.output.last := False
@@ -184,16 +189,31 @@ case class TxSimpleTop(addrwidth : Int, datawidth : Int) extends Component{
   val txcrc = Tx_Crc(datawidth)
   txcrc.io.input << txSimplebus.io.output
 
-  val txheader = Tx_Header(datawidth)
-  txheader.io.input << txcrc.io.output
-  txheader.io.frame_header := io.frame_head
+  val txcrc2 = Tx_Crc(datawidth)
+  txcrc2.io.input << txcrc.io.output
+
+//  val txheader = Tx_Header(datawidth)
+//  txheader.io.input << txcrc2.io.output
+//  txheader.io.frame_header := io.frame_head
 
   val tx_final = Tx_Final(datawidth)
-  tx_final.io.input << txheader.io.output
+//  tx_final.io.input << txheader.io.output
+  tx_final.io.input << txcrc2.io.output
 
   io.output << tx_final.io.output
 }
 
+//case class TxInterFrame(dataWidth : Int) extends Component{
+//  val io = new Bundle{
+//    val input = slave(Stream(Fragment(Bits(dataWidth bits))))
+//    val output = master(Stream(Fragment(Bits(dataWidth bits))))
+//  }
+//
+//  io.output.payload.fragment := io.input.payload.fragment
+//  io.output.valid := io.input.valid || RegNext(io.input.last)
+//  io.input.ready := io.output.ready
+//  io.output.payload.last := RegNext(io.input.last)
+//}
 
 object TxSimpleTop extends App{
   SpinalConfig(headerWithDate = true,

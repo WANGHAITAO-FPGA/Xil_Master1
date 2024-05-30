@@ -67,3 +67,45 @@ object TxSimpleSim{
     }
   }
 }
+
+//object TxInterFrameSim{
+//  import spinal.core.sim._
+//  def main(args: Array[String]): Unit = {
+//    SimConfig.withWave.doSim(new TxInterFrame(32)){dut=>
+//      dut.clockDomain.forkStimulus(10)
+//      dut.io.input.valid #= false
+//      dut.io.input.payload.last #= false
+//      dut.io.output.ready #= true
+//      dut.clockDomain.waitSampling(20)
+//
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= true
+//      dut.io.input.payload.last #= true
+//      dut.io.input.payload.fragment #= 0x01
+//      dut.clockDomain.waitSampling()
+//      dut.io.input.valid #= false
+//      dut.io.input.payload.last #= false
+//      dut.clockDomain.waitSampling(500)
+//    }
+//  }
+//}

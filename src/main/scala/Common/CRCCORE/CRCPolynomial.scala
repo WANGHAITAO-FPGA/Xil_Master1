@@ -52,5 +52,5 @@ object CRC5 {
 }
 
 object CRC6 {
-  def BISSC = new CRCPolynomial(polynomial = p"6'x03", initValue = BigInt("3F", 16), inputReflected = true, outputReflected = true, finalXor = BigInt("3F", 16))
+  def BISSC = new CRCPolynomial(polynomial = p"6'x02", initValue = BigInt("0", 16), inputReflected = false, outputReflected = false, finalXor = BigInt("3F", 16))
 }

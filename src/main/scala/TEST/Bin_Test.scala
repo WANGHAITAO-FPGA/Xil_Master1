@@ -11,8 +11,8 @@ object Bin_Test {
   def main(args: Array[String]): Unit = {
     val file = new File("D:/data.bin")
     val inputStream = new FileInputStream(file)
-    val bytes = Stream.continually(inputStream.read).take(200*4).map(_.toByte).toArray
-    val floats = bytes.grouped(4).map(_.reverse).map(java.nio.ByteBuffer.wrap(_).getFloat).toArray
+    val bytes = Stream.continually(inputStream.read).take(100000*4).map(_.toByte).toArray
+    val floats = bytes.grouped(4).map(_.reverse).map(java.nio.ByteBuffer.wrap(_).getInt).toArray
 
     val writer = new PrintWriter(new File("output.txt"))
     for (f <- floats) {

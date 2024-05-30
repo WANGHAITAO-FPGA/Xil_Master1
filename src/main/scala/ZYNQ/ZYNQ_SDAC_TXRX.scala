@@ -22,8 +22,11 @@ case class ZYNQ_SDAC_TXRX(usecrc : Boolean, endcoder_num : Int = 4, bissc_num : 
     val FPGA_DO = out Bits(16 bits)
     val AD5544_DATA = Seq.fill(ad5544_num)(out (Vec(Bits(16 bits),4)))
     val AD5544_TRIGER = Seq.fill(ad5544_num)(out Bool())
+    val rxruning_led = out Bool()
   }
   noIoPrefix()
+
+  val tx_count = Reg(UInt(32 bits)) init 0
 
   val tx_simple = TxSimpleTop(10,32)
 
@@ -40,14 +43,23 @@ case class ZYNQ_SDAC_TXRX(usecrc : Boolean, endcoder_num : Int = 4, bissc_num : 
     timer.io.clear := False
   }
 
+  val rx_runing = Runing(2500)
+  rx_runing.io.tick := rx_simple.io.trigger
+  io.rxruning_led := rx_runing.io.led
+
   rx_simple.io.input << io.input
   rx_simple.io.frame_head := io.frame_head
 
   io.output << tx_simple.io.output
-//  tx_simple.io.tx_tick := rx_simple.io.trigger
-  tx_simple.io.tx_tick := timer.io.full
+  tx_simple.io.tx_tick := rx_simple.io.trigger
+//  tx_simple.io.tx_tick := timer.io.full
     tx_simple.io.tx_head := io.tx_head
   tx_simple.io.frame_head := io.frame_head
+
+  when(tx_simple.io.tx_tick.rise()){
+    tx_count := tx_count + 1
+  }
+  sdac_reg.io.Tx_Cnt := tx_count.asBits
 
   sdac_reg.io.simplebus.WADDR := rx_simple.io.ram_txbundle.WADDR
   sdac_reg.io.simplebus.WDATA := rx_simple.io.ram_txbundle.WDATA

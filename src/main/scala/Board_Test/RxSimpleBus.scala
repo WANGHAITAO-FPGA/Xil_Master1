@@ -14,16 +14,26 @@ case class Rx_Preamble(datawidth : Int) extends Component{
   }
   noIoPrefix()
 
+  val fire_cnt = Reg(UInt(8 bits)) init 0
+
   val frame_head = Reg(Bits(64 bits))
   frame_head := io.frame_head
   val startDelimiter = frame_head(31 downto 0)##frame_head(63 downto 32)
-  val triggerDelimiter = B"x00F3F2F1"##frame_head(63 downto 32)
+  val triggerDelimiter = B"xA4A3A2A1"##B"xA1A2A3A4"
   val startDelimiterWidth = datawidth*2
   val history = History(io.input, 0 until startDelimiterWidth/datawidth, when = io.input.fire)
   val historyDataCat = B(Cat(history.map(_.payload.fragment).reverse))
-  val hit = history.map(_.valid).andR && historyDataCat === startDelimiter
+  val hit = history.map(_.valid).andR && historyDataCat === startDelimiter && fire_cnt === 1
   val inFrame = RegInit(False)
-  val trigger = history.map(_.valid).andR && historyDataCat === triggerDelimiter && io.input.payload.last
+//  val trigger = history.map(_.valid).andR && historyDataCat === triggerDelimiter && io.input.payload.last
+
+  when(io.input.fire && io.input.last){
+    fire_cnt := 0
+  }elsewhen(io.input.fire){
+    fire_cnt := fire_cnt + 1
+  }
+
+  val trigger = history.map(_.valid).andR && historyDataCat === triggerDelimiter && fire_cnt === 1
 
   io.output.valid := False
   io.output.payload  := io.input.payload
@@ -42,7 +52,7 @@ case class Rx_Preamble(datawidth : Int) extends Component{
       }
     }
   }
-  io.trigger := RegNext(trigger)
+  io.trigger := RegNext(trigger)||Delay(RegNext(trigger),1)||Delay(RegNext(trigger),2)||Delay(RegNext(trigger),3)
 }
 
 case class Rx_Checker(dataWidth : Int) extends Component {
@@ -151,4 +161,70 @@ case class RxSimpleBus(addrwidth : Int, datawidth : Int, usecrc : Boolean = true
   io.ram_txbundle.WENABLE := wenable
 
 //  val ila_probe=ila("1",waddr,wdata,wenable)
+}
+
+
+case class Rx_Pre(datawidth : Int) extends Component{
+  val io = new Bundle{
+    val input = slave(Stream(Fragment(Bits(datawidth bits))))
+    val output = master(Stream(Fragment(Bits(datawidth bits))))
+    val trigger = out Bool()
+    val s_axi_tkeep = in Bits(4 bits)
+    val m_axi_tkeep = out Bits(4 bits)
+  }
+  noIoPrefix()
+
+  io.input.valid.setName("s_axi_tvalid")
+  io.input.payload.fragment.setName("s_axi_tdata")
+  io.input.payload.last.setName("s_axi_tlast")
+  io.input.ready.setName("s_axi_tready")
+
+  io.output.valid.setName("m_axi_tvalid")
+  io.output.payload.fragment.setName("m_axi_tdata")
+  io.output.payload.last.setName("m_axi_tlast")
+  io.output.ready.setName("m_axi_tready")
+
+  io.m_axi_tkeep := B"xF"
+
+  val fire_cnt = Reg(UInt(8 bits)) init 0
+
+  val startDelimiter = B"x0000000F" ## B"x00F1F2F3"
+  val triggerDelimiter = B"x0000000A"##B"x00A1A2A3"
+  val startDelimiterWidth = datawidth*2
+  val history = History(io.input, 0 until startDelimiterWidth/datawidth, when = io.input.fire)
+  val historyDataCat = B(Cat(history.map(_.payload.fragment).reverse))
+  val hit = history.map(_.valid).andR && historyDataCat === startDelimiter
+  val inFrame = RegInit(False)
+  //  val trigger = history.map(_.valid).andR && historyDataCat === triggerDelimiter && io.input.payload.last
+
+  when(io.input.fire && io.input.last){
+    fire_cnt := 0
+  }elsewhen(io.input.fire){
+    fire_cnt := fire_cnt + 1
+  }
+
+  val trigger = history.map(_.valid).andR && historyDataCat === triggerDelimiter
+
+  io.output.valid := False
+  io.output.payload  := io.input.payload
+  io.input.ready := !inFrame || io.output.ready
+  io.output.last := io.input.last
+
+  when(!inFrame){
+    when(hit){
+      inFrame := True
+    }
+  } otherwise {
+    when(io.input.valid) {
+      io.output.valid := True
+      when(io.output.ready && io.input.last){
+        inFrame := False
+      }
+    }
+  }
+  io.trigger := RegNext(trigger)||Delay(RegNext(trigger),1)||Delay(RegNext(trigger),2)||Delay(RegNext(trigger),3)
+}
+
+object Rx_Pre extends App{
+  SpinalVerilog(Rx_Pre(32))
 }

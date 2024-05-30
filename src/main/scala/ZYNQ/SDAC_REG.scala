@@ -6,6 +6,7 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.bus.regif.AccessType.{RO, RW}
 import spinal.lib.bus.regif.{CHeaderGenerator, HtmlGenerator}
+import Common.PHPA.ila_test.ila
 
 import java.time.LocalDate
 
@@ -23,6 +24,7 @@ case class SDAC_REG(addrwidth : Int = 10, endcoder_num : Int = 4, bissc_num : In
     val FPGA_DO = out Bits(16 bits)
     val AD5544_DATA = Seq.fill(ad5544_num)(out (Vec(Bits(16 bits),4)))
     val AD5544_TRIGER = Seq.fill(ad5544_num)(out Bool())
+    val Tx_Cnt = in Bits(32 bits)
   }
   noIoPrefix()
 
@@ -32,6 +34,13 @@ case class SDAC_REG(addrwidth : Int = 10, endcoder_num : Int = 4, bissc_num : In
    * SDAC 光纤发送数据
    * 包含BISS-C光栅尺、ENCODER增量尺，AD采集数据，IO输入数据
    *********************************************************************************************/
+  val My_Reg_Header = busslave.newRegAt(address = 0x0000,doc="帧头")
+  val HEADER = My_Reg_Header.field(32 bits,RO,0,"帧头")
+  HEADER := B"32'xD1D2D3D4"
+
+  val My_Reg_Slaveid = busslave.newRegAt(address = 0x0004, doc = "ID")
+  val SLAVEID = My_Reg_Slaveid.field(32 bits, RO, 0, "ID")
+  SLAVEID := B"32'x0000000F"
 
   val My_Reg_VERSION = busslave.newRegAt(address = 0x0008,doc="软件版本号")
   val VERSION = My_Reg_VERSION.field(32 bits,RO,0,"软件版本号")
@@ -224,6 +233,9 @@ case class SDAC_REG(addrwidth : Int = 10, endcoder_num : Int = 4, bissc_num : In
     Encoder4_Pos_Clr_Loop := io.Encoder_Clr(3)
   }
 
+  val My_Reg_Tx_Cnt = busslave.newReg("tx_cnt")
+  val Tx_Cnt_Data = My_Reg_Tx_Cnt.field(32 bits,RO,0,s"tx_cnt")
+  Tx_Cnt_Data := io.Tx_Cnt
   /**********************************************************************************************
    * SDAC 光纤接受数据
    *
@@ -340,7 +352,7 @@ case class SDAC_REG(addrwidth : Int = 10, endcoder_num : Int = 4, bissc_num : In
     io.Encoder_Clr(3) := Encoder4_Pos_Clr
   }
   busslave.accept(HtmlGenerator("E-PAC-1A", "E-PAC-1A_Reg"))
-  busslave.accept(CHeaderGenerator("E-PAC-1A","E_PAC_1A"))
+  busslave.accept(CHeaderGenerator("E_PAC_1A","E_PAC_1A"))
 }
 
 object SDAC_REG extends App{

@@ -18,9 +18,9 @@ case class E_PAC_TOP(encoder_num : Int = 4, bissc_num : Int = 4, ad7606_num : In
     val gtx_clk = in Bool()
     val input = slave(Stream(Fragment(Bits(32 bits))))
     val output = master(Stream(Fragment(Bits(32 bits))))
-    val runing_Led = out Bool()
-    val error_led_tx = out Bool()
-    val error_led_rx = out Bool()
+    val rxruning_led = out Bool()
+    val txruning_led = out Bool()
+    val runing_led = out Bool()
     val led = out Bool()
   }
   noIoPrefix()
@@ -32,8 +32,8 @@ case class E_PAC_TOP(encoder_num : Int = 4, bissc_num : Int = 4, ad7606_num : In
     val gtx_txrx = ZYNQ_SDAC_TXRX(false,encoder_num,bissc_num,ad7606_num,ad5544_num)
     gtx_txrx.io.input <> io.input
     gtx_txrx.io.output <> io.output
-    gtx_txrx.io.frame_head := B"64'x00F1F2F30000000F"
-    gtx_txrx.io.tx_head := B"32'x00000032"
+    gtx_txrx.io.frame_head := B"64'xD1D2D3D40000000F"
+    gtx_txrx.io.tx_head := B"32'x00000028"
 
     for(i <- 0 until bissc_num){
       hardware_t.io.BISSC(i) <> io.BISSC(i)
@@ -70,15 +70,21 @@ case class E_PAC_TOP(encoder_num : Int = 4, bissc_num : Int = 4, ad7606_num : In
 
     val runing = Runing(10000)
     runing.io.tick := io.output.payload.last
-    io.runing_Led := runing.io.led
+    io.runing_led := runing.io.led
 
-    val error_Check_tx = Error_Check(62500000)
-    error_Check_tx.io.tick := io.output.payload.last
-    io.error_led_tx := error_Check_tx.io.led
+    io.rxruning_led <> gtx_txrx.io.rxruning_led
 
-    val error_Check_rx = Error_Check(62500000)
-    error_Check_rx.io.tick := io.input.payload.last
-    io.error_led_rx := error_Check_rx.io.led
+    val tx_runing = Runing(2500)
+    tx_runing.io.tick := io.output.payload.last
+    io.txruning_led := tx_runing.io.led
+
+//    val error_Check_tx = Error_Check(62500000)
+//    error_Check_tx.io.tick := io.output.payload.last
+//    io.error_led_tx := error_Check_tx.io.led
+//
+//    val error_Check_rx = Error_Check(62500000)
+//    error_Check_rx.io.tick := io.input.payload.last
+//    io.error_led_rx := error_Check_rx.io.led
 
     val ledtemp = Reg(Bool()) init False
 
@@ -94,9 +100,9 @@ case class E_PAC_TOP(encoder_num : Int = 4, bissc_num : Int = 4, ad7606_num : In
 object E_PAC_TOP_ extends App{
   SpinalConfig(anonymSignalPrefix = "temp",
     headerWithDate = true,
-//    targetDirectory = "D:/XilinxWorkSpace/E_PAC/E_PAC.srcs/sources_1/new/",
+    targetDirectory = "D:/XilinxWorkSpace/E_PAC/E_PAC.srcs/sources_1/new/",
     nameWhenByFile = false,
     enumPrefixEnable = false,
     genLineComments = false
-  ).generateVerilog(E_PAC_TOP(0,4,2,3))
+  ).generateVerilog(E_PAC_TOP(4,4,2,3))
 }
